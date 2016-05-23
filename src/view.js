@@ -1,6 +1,7 @@
-module.exports = function(data) {
+module.exports = function(ctrl) {
+  var data = ctrl.data;
   return {
     tag: 'p',
-    children: `${data} is alive!`
+    children: `${data.msg} is alive! <br/> <span class="cat">${data.face}</span> `
   };
 };
