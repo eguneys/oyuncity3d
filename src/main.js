@@ -1,35 +1,28 @@
+import ctrl from './ctrl';
 import view from './view';
-import cats from 'cat-ascii-faces';
 
-const ctrl = {
-  data: {
-    face: cats(),
-  }
-};
-
-function render(element, obj) {
-  var tag = obj.tag;
-  var body = obj.children;
-  element.innerHTML = `<${tag}>${body}</${tag}>`;
+function render(data) {
+  data.renderer.render(data.scene, data.camera);
 }
 
 function init(element, config = {}) {
-  var msg = config.msg || "[gulpp]";
 
-  ctrl.data.msg = msg;
+  var width = 640;
+  var height = 480;
 
-  ctrl.data.render = () => {
-    render(element, view(ctrl));
+  config.width = width;
+  config.height = height;
+  
+  var controller = new ctrl(config);
+  element.appendChild(controller.data.renderer.domElement);
+
+  controller.data.render = () => {
+    render(view(controller));
   };
-  ctrl.data.renderRAF = function() {
+  controller.data.renderRAF = function() {
     window.requestAnimationFrame(ctrl.data.render);
   };
-  ctrl.data.render();
+  controller.data.render();
 }
-
-setInterval(() => {
-  ctrl.data.face = cats();
-  ctrl.data.renderRAF();
-}, 1000 + (Math.random() * 4000));
 
 module.exports = init;

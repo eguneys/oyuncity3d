@@ -26,6 +26,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "cat-ascii-faces": "^2.0.0"
+    "cat-ascii-faces": "^2.0.0",
+    "three": "^0.82.1"
   }
 }

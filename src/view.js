@@ -1,7 +1,13 @@
+import * as THREE from 'three';
+
 module.exports = function(ctrl) {
-  var data = ctrl.data;
+  var scene = ctrl.data.scene;
+  var camera = ctrl.data.camera;
+  var renderer = ctrl.data.renderer;
+  
   return {
-    tag: 'p',
-    children: `${data.msg} is alive! <br/> <span class="cat">${data.face}</span> `
+    scene,
+    camera,
+    renderer
   };
 };
