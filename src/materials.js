@@ -19,6 +19,10 @@ module.exports = function Materials(data) {
   this.arenaGrid = createArenaGrid(data);
 
   this.arenaBoardWrapper = createArenaBoardWrapper(data);
+
+  this.boardTile = createBoardTile(data);
+  this.boardTile2 = createBoardTile2(data);
+  this.boardTile3 = createBoardTile3(data);
 }
 
 function createOverlayMaterial() {
@@ -34,18 +38,30 @@ function createArenaGrid(data) {
   gridTexture.magFilter = THREE.LineraFilter;
   gridTexture.wrapS = gridTexture.wrapT = THREE.RepeatWrapping;
 
-  return new THREE.MeshBasicMaterial({
-    map: gridTexture,
-    transparent: true,
-    depthWrite: true,
-    uniforms: {
-      tGrid: { type: 't', value: gridTexture }
-    }
+  return new THREE.MeshLambertMaterial({
+    map: gridTexture
   });
 }
 
 function createArenaBoardWrapper(data) {
   return new THREE.MeshStandardMaterial({
     color: 0xf4a460
+  });
+}
+
+function createBoardTile(data) {
+  return new THREE.MeshLambertMaterial({
+    color: 0xff0000
+  });
+}
+
+function createBoardTile2(data) {
+  return new THREE.MeshLambertMaterial({
+    color: 0xffffff
+  });
+}
+function createBoardTile3(data) {
+  return new THREE.MeshLambertMaterial({
+    color: 0x00ff00
   });
 }

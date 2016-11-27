@@ -3,6 +3,27 @@ import Geometry from './geometry';
 import settings from './settings';
 import { createBoard } from './board';
 
+// x y z
+var tileMatrix = [ -1, -1,
+                   +1, -1,
+                   -1, +1,
+                   +1, +1];
+
+var cornerMatrix = [ 1.75, 1.75,
+                     1.75, 1.75,
+                     1.75, 1.75,
+                     1.75, 1.75];
+
+var cornerMatrix2 = [ 1.25, 1.25,
+                      1.5, 2.5,
+                      1.5, 1.5,
+                      1.25, 1.25];
+
+var tile2Matrix = [ 0.25, -0.5,
+                   -0.5, 0.25,
+                   +1, -0.25,
+                   -0.25, 0.5];
+
 module.exports = function Environment(data) {
 
   this.terrain = createTerrain(data);
@@ -20,7 +41,7 @@ function createArena(data) {
       d = settings.data.arenaHeight,
       e = settings.data.arenaElevation;
 
-  var boardWidth = w * 0.27;
+  var boardWidth = settings.data.boardWidth;
   var boardHeight = boardWidth;
   var boardDepth = boardWidth;
 
@@ -29,25 +50,98 @@ function createArena(data) {
 
   // table
   var table = new THREE.Mesh(
-    new THREE.PlaneGeometry(w,d,1,1),
+    new THREE.PlaneGeometry(w, d),
     data.materials.arenaGrid);
-
-  table.rotation.x = -Math.PI*0.5;
-  // table.rotation.z = 180 / 180 * Math.PI;
-  table.position.y = - e;
-  table.position.z = w * 0.2;
-  table.position.x = - w * 0.2;
+  table.rotation.x = - 90 / 180 * Math.PI;
+  // table.position.y = - e;
+  // table.position.z = w * 0.2;
+  // table.position.x = - w * 0.2;
   arena.add(table);
 
   var boardWrapper = new THREE.Mesh(
     new THREE.BoxGeometry(boardWidth,
                           10, boardDepth),
     data.materials.arenaBoardWrapper);
-  // boardWrapper.rotation.x = -Math.PI* 0.5;
-  boardWrapper.position.y = 0;
-  boardWrapper.position.x = -w * 0.05;
-  boardWrapper.position.z = w * 0.05;
-  arena.add(boardWrapper);
+  boardWrapper.rotation.x = 90 / 180 * Math.PI;
+  boardWrapper.position.y = w * 0.02;
+  boardWrapper.position.x = - w * 0.02;
+  // boardWrapper.position.x = -w * 0.05;
+  // boardWrapper.position.z = w * 0.05;
+  table.add(boardWrapper);
+
+  for (var i = 0; i < 4; i++) {
+    createTile(data, boardWrapper, i);
+    createTile2(data, boardWrapper, i, 1);
+    createTile2(data, boardWrapper, i, 2);
+    createTile2(data, boardWrapper, i, 3);
+    createTile2(data, boardWrapper, i, 4);
+    createTile2(data, boardWrapper, i, 5);
+  }
+}
+
+function createTile(data, arena, idx) {
+  var tileWidth = settings.data.tileWidth,
+      tileDepth = tileWidth;
+  var tile = new THREE.Mesh(
+    new THREE.BoxGeometry(tileWidth,
+                          5,
+                          tileDepth),
+    data.materials.boardTile);
+  tile.position.y = 10;
+
+  tile.position.x = tileWidth
+    * cornerMatrix[idx * 2 + 0]
+    * tileMatrix[idx * 2 + 0];
+  tile.position.z = tileWidth
+    * cornerMatrix[idx * 2 + 1]
+    * tileMatrix[idx * 2 + 1];
+
+  
+  arena.add(tile);
+}
+
+function createTile2(data, arena, idx, factor) {
+  var material;
+  var tileWidth = settings.data.tileWidth,
+      tileDepth = tileWidth;
+
+  var offsetX = tileWidth
+      * tile2Matrix[idx * 2 + 1];
+  var offsetZ = tileWidth
+      * tile2Matrix[idx * 2 + 0];
+
+  if (idx === 0 || idx === 3) {
+    tileDepth *= 0.5;
+    offsetZ += offsetZ * (factor - 1) * 2;
+  } else {
+    tileWidth *= 0.5;
+    offsetX -= offsetX * (factor - 1) * 2;
+  }
+
+  if (factor % 2 === 0) {
+    material = data.materials.boardTile3;
+  } else {
+    material = data.materials.boardTile2;
+  }
+
+
+  var tile = new THREE.Mesh(
+    new THREE.BoxGeometry(tileWidth,
+                          5,
+                          tileDepth),
+    material);
+
+  tile.position.y = 10;
+
+  tile.position.x = tileWidth
+    * cornerMatrix2[idx * 2 + 0]
+    * tileMatrix[idx * 2 + 0]
+    + offsetX;
+  tile.position.z = tileWidth
+    * cornerMatrix2[idx * 2 + 1]
+    * tileMatrix[idx * 2 + 1] + offsetZ;
+  
+  arena.add(tile); 
 }
 
 function createTerrain(data) {
@@ -125,8 +219,8 @@ function createLights(terrain) {
     settings.data.dirLightColor,
     settings.data.dirLightIntensity);
   // dirLight.color.setHSV(0.1, 0.1, 1);
-  dirLight.position.set(0, 1, 5);
-  dirLight.position.multiplyScalar(150);
+  dirLight.position.set(-1, 1, 1);
+  dirLight.position.multiplyScalar(500);
   terrain.add(dirLight);
   lights.push(dirLight);
 

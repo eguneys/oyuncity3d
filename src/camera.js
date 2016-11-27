@@ -16,7 +16,8 @@ function CameraController(w, h) {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 
-  camera.position.set(120, 120, -120);
+  camera.position.set(70, 120, 70);
   this.target = new THREE.Vector3(0, 0, 0);
+
   camera.lookAt(this.target);
 }
