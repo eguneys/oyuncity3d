@@ -1,23 +1,48 @@
 import * as THREE from 'three';
+import Geometry from './geometry';
+import Environment from './environment';
+import CameraController from './camera';
+import settings from './settings';
 
-module.exports = function(config) {
-  this.data = {};
+module.exports = function(canvas, config) {
+  this.data = config;
 
-  var width = config.width;
-  var height = config.height;
+  var width = canvas.width;
+  var height = canvas.height;
 
-  this.data.scene = new THREE.Scene();
-  this.data.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-  this.data.renderer = new THREE.WebGLRenderer();
-  this.data.renderer.setSize(width, height);
+  this.data.scene = createScene();
+  this.data.container = createContainer(this.data.scene);
+  this.data.cameraController = new CameraController(width, height);
+  this.data.renderer = createRenderer(canvas);
 
-  var geometry = new THREE.BoxGeometry(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial({ 
-    color: 0x00ff00
+  this.data.env = new Environment(this.data);
+}
+
+function createContainer(scene) {
+  var gameContainer = new THREE.Object3D();
+  scene.add(gameContainer);
+  return gameContainer;
+}
+
+function createScene() {
+  var scene = new THREE.Scene();
+  return scene;
+}
+
+function createRenderer(canvas) {
+  var w = canvas.width,
+      h = canvas.height;
+
+  var precision = 'highp';
+  var renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: settings.data.antialias,
+    precision: precision,
+    alpha: false
   });
-  var cube = new THREE.Mesh(geometry, material);
-  this.data.scene.add(cube);
+  renderer.sortObjects = false;
+  renderer.autoClear = false;
+  renderer.setSize(w, h);
 
-  this.data.camera.position.z = 5;
-  this.data.camera.position.x = 4;
+  return renderer;
 }

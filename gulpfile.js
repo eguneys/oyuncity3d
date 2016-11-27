@@ -6,6 +6,7 @@ var watchify = require('watchify');
 var browserify = require('browserify');
 var uglify = require('gulp-uglify');
 var streamify = require('gulp-streamify');
+var bulkify = require('bulkify');
 var csso = require('gulp-csso');
 
 var sources = ['./src/main.js'];
