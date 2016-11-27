@@ -2,11 +2,6 @@ import ctrl from './ctrl';
 import view from './view';
 import Assets from './assets';
 
-function render(data) {
-  data.renderer.render(data.scene,
-                       data.cameraController.camera);
-}
-
 function init(element, config = {}) {
 
   config.width = 640;
@@ -15,18 +10,10 @@ function init(element, config = {}) {
   new Assets(config, (data) => {
     var controller = new ctrl(element, data);
 
-    controller.data.render = () => {
-      render(view(controller));
-    };
-    controller.data.renderRAF = function() {
-      window.requestAnimationFrame(ctrl.data.render);
-    };
+    view(element, controller.data);
 
-    controller.data.render();
+    controller.data.game.run();
   });
 }
-
-
-
 
 module.exports = init;

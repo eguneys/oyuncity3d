@@ -1,6 +1,6 @@
 import Themes from './themes';
 
-var TILE_WIDTH = 20;
+var TILE_WIDTH = 30;
 var TILE_HEIGHT = 10;
 
 var settings = {};
@@ -8,12 +8,19 @@ var settings = {};
 settings.theme = Themes.current;
 
 settings.data = {
-  antialias: false,
-  cameraFov: 40,
 
-  arenaWidth: TILE_WIDTH * 6,
-  arenaHeight: TILE_WIDTH * 6,
-  arenaElevation: TILE_HEIGHT,
+  defaultFramerate: 60,
+  defaultTimestep: 1000/60,
+  maxUpdatesPerFrame: 15,
+
+  antialias: false,
+  cameraFov: 30,
+  cameraX: TILE_HEIGHT * 15,
+  cameraDepth: TILE_HEIGHT * 16,
+
+  arenaWidth: TILE_WIDTH * 12,
+  arenaHeight: TILE_WIDTH * 12,
+  arenaElevation: TILE_HEIGHT * 0.5,
 
   boardWidth: TILE_WIDTH * 4.5 + TILE_WIDTH * 0.25,
 
@@ -26,5 +33,8 @@ settings.data = {
   hemisphereLightIntensity: 0.74,
   arenaSurfaceY: -200
 };
+
+settings.data.framerate = settings.data.defaultFramerate;
+settings.data.timestep = settings.data.defaultTimestep;
 
 module.exports = settings;
