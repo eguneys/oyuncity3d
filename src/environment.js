@@ -5,105 +5,59 @@ import { createBoard } from './board';
 import Player from './player';
 
 // x y z
-var tileMatrix = [ -1, -1,
-                   +1, -1,
+var tileMatrix = [ +1, +1,
                    -1, +1,
-                   +1, +1];
+                   -1, -1,
+                   +1, -1];
 
-var cornerMatrix = [ 1.75, 1.75,
-                     1.75, 1.75,
-                     1.75, 1.75,
-                     1.75, 1.75];
-
-var corner2Matrix = [ 1.25, 1.25,
-                      1.5, 2.5,
-                      1.5, 1.5,
-                      1.25, 1.25];
-
-var tile2Matrix = [ 0.25, -0.5,
-                   -0.5, 0.25,
-                   +1, -0.25,
-                   -0.25, 0.5];
-
-var tileOffsetMatrix = [1, 0,
-                        0, 1,
-                        1, 0,
-                        -1, -1];
-
-
+var offsetMatrix = [-1, 0,
+                    0, -1,
+                    1, 0,
+                    0, 1];
 
 module.exports = function Environment(data) {
 
-  this.terrain = createTerrain(data);
-
-  this.lights = createLights(this.terrain);
-
-  var arena = createArena(data);
+  this.arena = createArena(data);
+  this.lights = createLights(this.arena);
 
   createBoard(data);
 
   this.addPlayer = (idx) => {
+    var cornerIdx = Math.floor(idx / 6);
+    var offsetIdx = idx % 6;
+
     var player = new Player(data);
-    var pos = getTilePos(idx);
+
+    var pos = getTilePos(cornerIdx, offsetIdx);
     player.reset(pos.x, pos.z);
-    arena.add(player.mesh);
+    this.arena.add(player.mesh);
   };
 };
 
-function getCornerTileCenterPos(idx) {
+function getTilePos(cornerIdx, offsetIdx) {
   var tileWidth = settings.data.tileWidth;
 
-  var x = tileMatrix[idx * 2 + 0];
-  var z = tileMatrix[idx * 2 + 1];
+  var x = tileWidth * 1.75
+      * tileMatrix[cornerIdx * 2 + 0];
 
+  var z = tileWidth * 1.75
+      * tileMatrix[cornerIdx * 2 + 1];
 
-  x *= cornerMatrix[idx * 2 + 0];
-  z *= cornerMatrix[idx * 2 + 1];
+  var tileOffset = offsetIdx * tileWidth * 0.5;
 
-  x *= tileWidth;
-  z *= tileWidth;
-
-  return { x, z };
-}
-
-function getTilePos(idx) {
-  var tileWidth = settings.data.tileWidth;
-
-  var cornerIdx = Math.floor(idx / 6);
-  var tileIdx = idx % 6;
-  var cornerCenter = getCornerTileCenterPos(cornerIdx);
-
-  var tileOffset = tileIdx * tileWidth * 0.5;
-
-  if (tileIdx !== 0) {
+  if (tileOffset > 0) {
     tileOffset += tileWidth * 0.25;
   }
 
-  var tileOffsetX = tileOffset *
-      tileOffsetMatrix[cornerIdx * 2 + 0];
-  var tileOffsetZ = tileOffset *
-      tileOffsetMatrix[cornerIdx * 2 + 1];
+  var offsetX = tileOffset
+      * offsetMatrix[cornerIdx * 2 + 0];
+  var offsetZ = tileOffset
+      * offsetMatrix[cornerIdx * 2 + 1];
 
-  return {
-    x: cornerCenter.x + tileOffsetX,
-    z: cornerCenter.z + tileOffsetZ
-  };
-}
+  x += offsetX;
+  z += offsetZ;
 
-function getTile2CenterPos(idx) {
-  var tileWidth = settings.data.tileWidth;
-
-  var x = tile2Matrix[idx * 2 + 0];
-  var z = tile2Matrix[idx * 2 + 1];
-
-
-  x *= corner2Matrix[idx * 2 + 0];
-  z *= corner2Matrix[idx * 2 + 1];
-
-  x *= tileWidth;
-  z *= tileWidth;
-
-  return { x, z };  
+  return { x, z };
 }
 
 function createArena(data) {
@@ -144,7 +98,6 @@ function createArena(data) {
     createTile2(data, boardWrapper, i, 4);
     createTile2(data, boardWrapper, i, 5);
   }
-
   return arena;
 }
 
@@ -156,40 +109,31 @@ function createTile(data, arena, idx) {
                           5,
                           tileDepth),
     data.materials.boardTile);
+
   tile.position.y = settings.data.tileDepth;
 
-  tile.position.x = tileWidth
-    * cornerMatrix[idx * 2 + 0]
-    * tileMatrix[idx * 2 + 0];
-  tile.position.z = tileWidth
-    * cornerMatrix[idx * 2 + 1]
-    * tileMatrix[idx * 2 + 1];
+  var tilePos = getTilePos(idx, 0);
 
+  tile.position.x = tilePos.x;
+  tile.position.z = tilePos.z;
   
   arena.add(tile);
 
   return tile;
 }
 
-function createTile2(data, arena, idx, factor) {
+function createTile2(data, arena, cornerIdx, offsetIdx) {
   var material;
   var tileWidth = settings.data.tileWidth,
-      tileDepth = tileWidth;
+      tileHeight = tileWidth;
 
-  var offsetX = tileWidth
-      * tile2Matrix[idx * 2 + 1];
-  var offsetZ = tileWidth
-      * tile2Matrix[idx * 2 + 0];
-
-  if (idx === 0 || idx === 3) {
-    tileDepth *= 0.5;
-    offsetZ += offsetZ * (factor - 1) * 2;
-  } else {
+  if (cornerIdx %2 === 0) {
     tileWidth *= 0.5;
-    offsetX -= offsetX * (factor - 1) * 2;
+  } else {
+    tileHeight *= 0.5;
   }
 
-  if (factor % 2 === 0) {
+  if (offsetIdx % 2 === 0) {
     material = data.materials.boardTile3;
   } else {
     material = data.materials.boardTile2;
@@ -199,81 +143,17 @@ function createTile2(data, arena, idx, factor) {
   var tile = new THREE.Mesh(
     new THREE.BoxGeometry(tileWidth,
                           5,
-                          tileDepth),
+                          tileHeight),
     material);
 
   tile.position.y = settings.data.tileDepth;
 
-  tile.position.x = tileWidth
-    * corner2Matrix[idx * 2 + 0]
-    * tileMatrix[idx * 2 + 0]
-    + offsetX;
-  tile.position.z = tileWidth
-    * corner2Matrix[idx * 2 + 1]
-    * tileMatrix[idx * 2 + 1] + offsetZ;
+  var tilePos = getTilePos(cornerIdx, offsetIdx);
+
+  tile.position.x = tilePos.x;
+  tile.position.z = tilePos.z;
   
   arena.add(tile); 
-}
-
-function createTerrain(data) {
-  var terrain = new THREE.Object3D();
-  data.container.add(terrain);
-
-  var terrainMesh = new THREE.Mesh(Geometry.terrain, data.materials.terrain1);
-  terrainMesh.position.z = 0;
-  terrainMesh.position.y = -6;
-  terrain.terrainShortcut = terrainMesh;
-
-  terrain.add(terrainMesh);
-
-  var segments = new THREE.Vector2(20, 3);
-
-  terrainMesh = createTerrainMesh(8000,
-                                  2000,
-                                  3505,
-                                  segments.x,
-                                  segments.y,
-                                  new THREE.Color(0x1f84d5),
-                                  4,
-                                  false,
-                                  data.materials.terrain2);
-  terrainMesh.position.z = -7500;
-  terrainMesh.position.x = Math.random() * 5000 - 2500;
-  terrainMesh.position.y = settings.data.arenaSurfaceY-200;
-  terrainMesh.scale.x = 4;
-  terrainMesh.scale.y = 3;
-  terrain.add(terrainMesh);
-
-  segments = new THREE.Vector2(40, 20);
-
-  terrainMesh = createTerrainMesh(4000,
-                                  5000,
-                                  8505,
-                                  segments.x,
-                                  segments.y,
-                                  new THREE.Color(0x195475),
-                                  4,
-                                  false,
-                                  data.materials.terrain3);
-  terrainMesh.position.z = -6000;
-  terrainMesh.position.x = Math.random() * 5000 - 2500;
-  terrainMesh.position.y = settings.data.arenaSurfaceY-200;
-  terrainMesh.scale.x = 4;
-  terrainMesh.scale.y = 1;
-  terrain.add(terrainMesh);
-  
-  return terrain;
-}
-
-function createOverlay(data) {
-  var camera = data.camera;
-
-  var planeGeo = new THREE.PlaneGeometry(100, 100, 3, 3);
-
-  var plane = new THREE.Mesh(planeGeo, data.materials.overlay);
-  camera.add(plane);
-
-  return plane;
 }
 
 function createLights(terrain) {
@@ -296,35 +176,4 @@ function createLights(terrain) {
   lights.push(dirLight);
 
   return lights;
-}
-
-function createTerrainMesh(w,
-                           h,
-                           extrude,
-                           segW,
-                           segH,
-                           baseColor,
-                           noiseFactor,
-                           bValley,
-                           material) {
-  var n = 0
-  , geometry = new THREE.PlaneGeometry(w,h,segW,segH)
-  , len = geometry.vertices.length;
-
-  // THREE.GeometryUtils.triangulateQuads(geometry);
-
-  for (var i = 0; i < len; i++) {
-    var point = geometry.vertices[i];
-    point.x += Math.random() * 60;
-    point.y += Math.random() * 150 - 70;
-    point.z += Math.random() * 220;
-  }
-
-  geometry.mergeVertices();
-  geometry.computeFaceNormals();
-
-  var mountainMesh = new THREE.Mesh(geometry, material);
-  mountainMesh.rotation.x = Math.PI*-0.5;
-
-  return mountainMesh;
 }

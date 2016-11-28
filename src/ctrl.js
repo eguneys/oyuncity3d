@@ -8,9 +8,11 @@ module.exports = function(canvas, config) {
   this.data.game = new Game(this);
 
   this.initGame = () => {
-    this.data.env.addPlayer(10);
-    this.data.env.addPlayer(11);
-    this.data.env.addPlayer(12);
-    this.data.env.addPlayer(13);
+    for (var i = 0; i < 6; i++) {
+      this.data.env.addPlayer(i);
+      this.data.env.addPlayer(i + 6);
+      this.data.env.addPlayer(i + 12);
+      this.data.env.addPlayer(i + 18);
+    }
   };
 };
