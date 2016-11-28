@@ -21,10 +21,13 @@ settings.data = {
   arenaWidth: TILE_WIDTH * 12,
   arenaHeight: TILE_WIDTH * 12,
   arenaElevation: TILE_HEIGHT * 0.5,
+  arenaDepth: TILE_WIDTH / 6,
+  unitSize: TILE_WIDTH / 4,
 
   boardWidth: TILE_WIDTH * 4.5 + TILE_WIDTH * 0.25,
 
   tileWidth: TILE_WIDTH,
+  tileDepth: TILE_WIDTH / 6,
 
   dirLightColor: 0xffffff,
   dirLightIntensity: 0.7,

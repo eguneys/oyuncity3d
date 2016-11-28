@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import settings from './settings';
+import Themes from './themes';
 
 module.exports = function Materials(data) {
 
@@ -23,7 +24,9 @@ module.exports = function Materials(data) {
   this.boardTile = createBoardTile(data);
   this.boardTile2 = createBoardTile2(data);
   this.boardTile3 = createBoardTile3(data);
-}
+
+  this.player = new THREE.MeshLambertMaterial({ color: Themes.yellow });
+};
 
 function createOverlayMaterial() {
   return new THREE.MeshBasicMaterial({

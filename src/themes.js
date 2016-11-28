@@ -1,5 +1,9 @@
 function Themes() {
 
+  this.white = 0xedecd6;
+
+  this.yellow = 0xcdcd00;
+
   this.currentThemeIndex = 0;
   this.list = [
     new Theme({}),

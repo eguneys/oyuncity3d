@@ -12,6 +12,8 @@ function init(element, config = {}) {
 
     view(element, controller.data);
 
+
+    controller.initGame();
     controller.data.game.run();
   });
 }

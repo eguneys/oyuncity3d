@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Geometry from './geometry';
 import settings from './settings';
 import { createBoard } from './board';
+import Player from './player';
 
 // x y z
 var tileMatrix = [ -1, -1,
@@ -14,7 +15,7 @@ var cornerMatrix = [ 1.75, 1.75,
                      1.75, 1.75,
                      1.75, 1.75];
 
-var cornerMatrix2 = [ 1.25, 1.25,
+var corner2Matrix = [ 1.25, 1.25,
                       1.5, 2.5,
                       1.5, 1.5,
                       1.25, 1.25];
@@ -24,16 +25,86 @@ var tile2Matrix = [ 0.25, -0.5,
                    +1, -0.25,
                    -0.25, 0.5];
 
+var tileOffsetMatrix = [1, 0,
+                        0, 1,
+                        1, 0,
+                        -1, -1];
+
+
+
 module.exports = function Environment(data) {
 
   this.terrain = createTerrain(data);
 
   this.lights = createLights(this.terrain);
 
-  createArena(data);
+  var arena = createArena(data);
 
   createBoard(data);
+
+  this.addPlayer = (idx) => {
+    var player = new Player(data);
+    var pos = getTilePos(idx);
+    player.reset(pos.x, pos.z);
+    arena.add(player.mesh);
+  };
 };
+
+function getCornerTileCenterPos(idx) {
+  var tileWidth = settings.data.tileWidth;
+
+  var x = tileMatrix[idx * 2 + 0];
+  var z = tileMatrix[idx * 2 + 1];
+
+
+  x *= cornerMatrix[idx * 2 + 0];
+  z *= cornerMatrix[idx * 2 + 1];
+
+  x *= tileWidth;
+  z *= tileWidth;
+
+  return { x, z };
+}
+
+function getTilePos(idx) {
+  var tileWidth = settings.data.tileWidth;
+
+  var cornerIdx = Math.floor(idx / 6);
+  var tileIdx = idx % 6;
+  var cornerCenter = getCornerTileCenterPos(cornerIdx);
+
+  var tileOffset = tileIdx * tileWidth * 0.5;
+
+  if (tileIdx !== 0) {
+    tileOffset += tileWidth * 0.25;
+  }
+
+  var tileOffsetX = tileOffset *
+      tileOffsetMatrix[cornerIdx * 2 + 0];
+  var tileOffsetZ = tileOffset *
+      tileOffsetMatrix[cornerIdx * 2 + 1];
+
+  return {
+    x: cornerCenter.x + tileOffsetX,
+    z: cornerCenter.z + tileOffsetZ
+  };
+}
+
+function getTile2CenterPos(idx) {
+  var tileWidth = settings.data.tileWidth;
+
+  var x = tile2Matrix[idx * 2 + 0];
+  var z = tile2Matrix[idx * 2 + 1];
+
+
+  x *= corner2Matrix[idx * 2 + 0];
+  z *= corner2Matrix[idx * 2 + 1];
+
+  x *= tileWidth;
+  z *= tileWidth;
+
+  return { x, z };  
+}
 
 function createArena(data) {
   var w = settings.data.arenaWidth,
@@ -53,20 +124,16 @@ function createArena(data) {
     new THREE.PlaneGeometry(w, d),
     data.materials.arenaGrid);
   table.rotation.x = - 90 / 180 * Math.PI;
-  // table.position.y = - e;
-  // table.position.z = w * 0.2;
-  // table.position.x = - w * 0.2;
   arena.add(table);
 
   var boardWrapper = new THREE.Mesh(
     new THREE.BoxGeometry(boardWidth,
-                          10, boardDepth),
+                          settings.data.arenaDepth,
+                          boardDepth),
     data.materials.arenaBoardWrapper);
   boardWrapper.rotation.x = 90 / 180 * Math.PI;
   boardWrapper.position.y = w * 0.02;
   boardWrapper.position.x = - w * 0.02;
-  // boardWrapper.position.x = -w * 0.05;
-  // boardWrapper.position.z = w * 0.05;
   table.add(boardWrapper);
 
   for (var i = 0; i < 4; i++) {
@@ -77,6 +144,8 @@ function createArena(data) {
     createTile2(data, boardWrapper, i, 4);
     createTile2(data, boardWrapper, i, 5);
   }
+
+  return arena;
 }
 
 function createTile(data, arena, idx) {
@@ -87,7 +156,7 @@ function createTile(data, arena, idx) {
                           5,
                           tileDepth),
     data.materials.boardTile);
-  tile.position.y = 10;
+  tile.position.y = settings.data.tileDepth;
 
   tile.position.x = tileWidth
     * cornerMatrix[idx * 2 + 0]
@@ -98,6 +167,8 @@ function createTile(data, arena, idx) {
 
   
   arena.add(tile);
+
+  return tile;
 }
 
 function createTile2(data, arena, idx, factor) {
@@ -131,14 +202,14 @@ function createTile2(data, arena, idx, factor) {
                           tileDepth),
     material);
 
-  tile.position.y = 10;
+  tile.position.y = settings.data.tileDepth;
 
   tile.position.x = tileWidth
-    * cornerMatrix2[idx * 2 + 0]
+    * corner2Matrix[idx * 2 + 0]
     * tileMatrix[idx * 2 + 0]
     + offsetX;
   tile.position.z = tileWidth
-    * cornerMatrix2[idx * 2 + 1]
+    * corner2Matrix[idx * 2 + 1]
     * tileMatrix[idx * 2 + 1] + offsetZ;
   
   arena.add(tile); 
