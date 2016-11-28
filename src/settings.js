@@ -1,6 +1,6 @@
 import Themes from './themes';
 
-var TILE_WIDTH = 30;
+var TILE_WIDTH = 40;
 var TILE_HEIGHT = 10;
 
 var settings = {};
@@ -14,9 +14,9 @@ settings.data = {
   maxUpdatesPerFrame: 15,
 
   antialias: false,
-  cameraFov: 30,
-  cameraX: TILE_HEIGHT * 15,
-  cameraDepth: TILE_HEIGHT * 16,
+  cameraFov: 20,
+  cameraX: TILE_HEIGHT * 32,
+  cameraDepth: TILE_HEIGHT * 40,
 
   arenaWidth: TILE_WIDTH * 12,
   arenaHeight: TILE_WIDTH * 12,

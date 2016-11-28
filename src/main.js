@@ -4,8 +4,8 @@ import Assets from './assets';
 
 function init(element, config = {}) {
 
-  config.width = 640;
-  config.height = 480;
+  config.width = element.width;
+  config.height = element.height;
 
   new Assets(config, (data) => {
     var controller = new ctrl(element, data);

@@ -19,7 +19,10 @@ function CameraController(w, h) {
   camera.position.set(settings.data.cameraX,
                       settings.data.cameraDepth,
                       settings.data.cameraX);
-  this.target = new THREE.Vector3(0, 0, 0);
+  this.target = new THREE.Vector3(
+    -10, 
+    0,
+    -10);
 
   camera.lookAt(this.target);
 }
