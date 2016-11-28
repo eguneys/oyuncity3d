@@ -1,5 +1,6 @@
 import util from './util';
 import settings from './settings';
+import World from './world';
 
 const { requestAnimationFrame,
         now } = util;
@@ -9,6 +10,8 @@ module.exports = function(ctrl) {
 
   this.running = false;
   this.paused = false;
+
+  this.world = new World();
 
   this.run = () => {
 
@@ -53,11 +56,10 @@ module.exports = function(ctrl) {
     loop();
   };
 
-
   this.update = () => {
     var ts = settings.data.timestep;
     // update world
-    console.log('update');
+    data.env.update(this.world, ts);
   };
 
   this.render = () => {

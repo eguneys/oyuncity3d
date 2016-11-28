@@ -18,11 +18,19 @@ module.exports = function Player(data) {
     return this.mesh.geometry.parameters.width;
   };
 
-  this.reset = (x, z) => {
+  this.setPosition = (x, z) => {
     this.mesh.position
       .set(x - this.getHeight() / 2,
            settings.data.arenaElevation +
            settings.data.arenaDepth * 2,
            z - this.getWidth() / 2);
+  };
+
+  this.reset = (x, z) => {
+    this.setPosition(x, z);
+  };
+
+  this.update = (pos) => {
+    this.setPosition(pos.x, pos.z);
   };
 };

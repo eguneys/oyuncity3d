@@ -13,7 +13,7 @@ settings.data = {
   defaultTimestep: 1000/60,
   maxUpdatesPerFrame: 15,
 
-  antialias: false,
+  antialias: true,
   cameraFov: 20,
   cameraX: TILE_HEIGHT * 32,
   cameraDepth: TILE_HEIGHT * 40,
