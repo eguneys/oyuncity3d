@@ -59,6 +59,7 @@ module.exports = function(ctrl) {
   this.update = () => {
     var ts = settings.data.timestep;
     // update world
+    data.simulation.update(data.world, ts);
     data.env.update(data.world, ts);
   };
 

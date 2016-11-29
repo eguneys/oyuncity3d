@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "cat-ascii-faces": "^2.0.0",
+    "gsap": "^1.19.0",
     "three": "^0.82.1"
   }
 }

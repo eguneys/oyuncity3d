@@ -1,19 +1,9 @@
 import * as THREE from 'three';
 import Geometry from './geometry';
 import settings from './settings';
+import tiles from './tiles';
 import { createBoard } from './board';
 import Player from './player';
-
-// x y z
-var tileMatrix = [ +1, +1,
-                   -1, +1,
-                   -1, -1,
-                   +1, -1];
-
-var offsetMatrix = [-1, 0,
-                    0, -1,
-                    1, 0,
-                    0, 1];
 
 module.exports = function Environment(data) {
 
@@ -24,9 +14,11 @@ module.exports = function Environment(data) {
 
   createBoard(data);
 
-  this.addPlayer = (idx) => {
+  this.addPlayer = (idx, body) => {
     var player = new Player(data);
 
+
+    player.reset(body);
     this.players.push(player);
     this.arena.add(player.mesh);
 
@@ -37,58 +29,10 @@ module.exports = function Environment(data) {
     for (var i = 0; i< this.players.length; i++) {
       var pBody = world.players[i];
       var player = this.players[i];
-      updatePlayerPosition(pBody);
       player.update(pBody);
     }
   };
 };
-
-function updatePlayerPosition(body) {
-  if (body.nextTile !== null) {
-    var prevPos = body.position;
-
-    var nextTile = body.nextTile;
-    body.nextTile = null;
-
-    var tilePos = getTilePosI(nextTile);
-    body.position = tilePos;
-
-    addTween(prevPos, body.position);
-  }
-}
-
-function getTilePosI(idx) {
-  var cornerIdx = Math.floor(idx / 6);
-  var offsetIdx = idx % 6;
-  var pos = getTilePos(cornerIdx, offsetIdx);
-  return pos;
-}
-
-function getTilePos(cornerIdx, offsetIdx) {
-  var tileWidth = settings.data.tileWidth;
-
-  var x = tileWidth * 1.75
-      * tileMatrix[cornerIdx * 2 + 0];
-
-  var z = tileWidth * 1.75
-      * tileMatrix[cornerIdx * 2 + 1];
-
-  var tileOffset = offsetIdx * tileWidth * 0.5;
-
-  if (tileOffset > 0) {
-    tileOffset += tileWidth * 0.25;
-  }
-
-  var offsetX = tileOffset
-      * offsetMatrix[cornerIdx * 2 + 0];
-  var offsetZ = tileOffset
-      * offsetMatrix[cornerIdx * 2 + 1];
-
-  x += offsetX;
-  z += offsetZ;
-
-  return { x, z };
-}
 
 function createArena(data) {
   var w = settings.data.arenaWidth,
@@ -142,7 +86,7 @@ function createTile(data, arena, idx) {
 
   tile.position.y = settings.data.tileDepth;
 
-  var tilePos = getTilePos(idx, 0);
+  var tilePos = tiles.getTilePos(idx, 0);
 
   tile.position.x = tilePos.x;
   tile.position.z = tilePos.z;
@@ -178,7 +122,7 @@ function createTile2(data, arena, cornerIdx, offsetIdx) {
 
   tile.position.y = settings.data.tileDepth;
 
-  var tilePos = getTilePos(cornerIdx, offsetIdx);
+  var tilePos = tiles.getTilePos(cornerIdx, offsetIdx);
 
   tile.position.x = tilePos.x;
   tile.position.z = tilePos.z;

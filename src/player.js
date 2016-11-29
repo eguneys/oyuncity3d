@@ -31,8 +31,8 @@ module.exports = function Player(data) {
            z - this.getWidth() / 2);
   };
 
-  this.reset = (pos) => {
-    this.setPosition(pos);
+  this.reset = (body) => {
+    this.setPosition(body.position);
   };
 
   this.setPosition = (pos) => {
