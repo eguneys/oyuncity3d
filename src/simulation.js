@@ -30,20 +30,21 @@ function updatePlayerPosition(world, body) {
     var nextTile = body.currentTile + body.tileForward;
     var nextCorner = tiles.getNextCorner(body.currentTile);
     var cornerForward = (
-      (nextCorner===0?4:nextCorner) * settings.data.rowTiles
+      (nextCorner===0?4:nextCorner)
+        * settings.data.rowTiles
         - body.currentTile);
 
     var duration = cornerForward * 0.1;
 
     if (tileForward > cornerForward) {
       nextTile = nextCorner * settings.data.rowTiles;
-      body.tileForward = body.tileForward - cornerForward;    } else {
-        nextTile = nextTile % settings.data.totalTiles;
-        body.tileForward = 0;
-        duration = tileForward * 0.1;
-      }
+      body.tileForward = body.tileForward - cornerForward;
+    } else {
+      nextTile = nextTile % settings.data.totalTiles;
+      body.tileForward = 0;
+      duration = tileForward * 0.1;
+    }
 
-    
     var pos = tiles.getTilePosI(nextTile);
     TweenMax.to(body.position,
                 duration,

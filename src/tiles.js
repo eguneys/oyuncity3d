@@ -33,6 +33,8 @@ function getTilePos(cornerIdx, offsetIdx) {
   var z = tileWidth * 1.75
       * tileMatrix[cornerIdx * 2 + 1];
 
+  var y = settings.data.arenaElevation;
+
   var tileOffset = offsetIdx * tileWidth * 0.5;
 
   if (tileOffset > 0) {
@@ -47,7 +49,7 @@ function getTilePos(cornerIdx, offsetIdx) {
   x += offsetX;
   z += offsetZ;
 
-  return { x, z };
+  return { x, y, z };
 }
 
 module.exports = {
