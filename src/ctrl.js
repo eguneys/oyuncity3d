@@ -10,12 +10,19 @@ module.exports = function(canvas, config) {
   this.initGame = () => {
     addPlayer(this.data, 0);
   };
+
+  this.movePlayer = (player, tile) => {
+    var data = this.data;
+
+    player = data.world.players[player];
+    player.nextTile = tile;
+  };
 };
 
 function addPlayer(data, idx) {
   var player = {
-    tileIdx: 0
+    nextTile: 0
   };
-  data.game.world.players[idx] = player;
+  data.world.players[idx] = player;
   data.env.addPlayer(idx);
 }

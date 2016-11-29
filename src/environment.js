@@ -25,15 +25,9 @@ module.exports = function Environment(data) {
   createBoard(data);
 
   this.addPlayer = (idx) => {
-    var cornerIdx = Math.floor(idx / 6);
-    var offsetIdx = idx % 6;
-
     var player = new Player(data);
 
     this.players.push(player);
-
-    var pos = getTilePos(cornerIdx, offsetIdx);
-    player.reset(pos.x, pos.z);
     this.arena.add(player.mesh);
 
     return player;
@@ -43,15 +37,24 @@ module.exports = function Environment(data) {
     for (var i = 0; i< this.players.length; i++) {
       var pBody = world.players[i];
       var player = this.players[i];
-      updatePlayerPosition(player,
-                           pBody.tileIdx);
+      updatePlayerPosition(pBody);
+      player.update(pBody);
     }
   };
 };
 
-function updatePlayerPosition(player, idx) {
-  var pos = getTilePosI(idx);
-  player.update(pos);
+function updatePlayerPosition(body) {
+  if (body.nextTile !== null) {
+    var prevPos = body.position;
+
+    var nextTile = body.nextTile;
+    body.nextTile = null;
+
+    var tilePos = getTilePosI(nextTile);
+    body.position = tilePos;
+
+    addTween(prevPos, body.position);
+  }
 }
 
 function getTilePosI(idx) {

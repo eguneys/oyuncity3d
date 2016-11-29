@@ -11,7 +11,7 @@ module.exports = function(ctrl) {
   this.running = false;
   this.paused = false;
 
-  this.world = new World();
+  data.world = new World();
 
   this.run = () => {
 
@@ -59,7 +59,7 @@ module.exports = function(ctrl) {
   this.update = () => {
     var ts = settings.data.timestep;
     // update world
-    data.env.update(this.world, ts);
+    data.env.update(data.world, ts);
   };
 
   this.render = () => {

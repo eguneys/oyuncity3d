@@ -10,6 +10,8 @@ module.exports = function Player(data) {
   this.mesh = new THREE.Mesh(geom,
                              data.materials.player);
 
+  this.position = {};
+
   this.getHeight = () => {
     return this.mesh.geometry.parameters.height;
   };
@@ -18,7 +20,10 @@ module.exports = function Player(data) {
     return this.mesh.geometry.parameters.width;
   };
 
-  this.setPosition = (x, z) => {
+  this.updatePosition = () => {
+    var x = this.position.x;
+    var z = this.position.z;
+
     this.mesh.position
       .set(x - this.getHeight() / 2,
            settings.data.arenaElevation +
@@ -26,11 +31,21 @@ module.exports = function Player(data) {
            z - this.getWidth() / 2);
   };
 
-  this.reset = (x, z) => {
-    this.setPosition(x, z);
+  this.reset = (pos) => {
+    this.setPosition(pos);
   };
 
-  this.update = (pos) => {
-    this.setPosition(pos.x, pos.z);
+  this.setPosition = (pos) => {
+    if (pos.x !== this.position.x ||
+        pos.z !== this.position.z) {
+      this.position.x = pos.x;
+      this.position.z = pos.z;
+      this.updatePosition();
+    }
+
+  };
+
+  this.update = (body) => {
+    this.setPosition(body.position);
   };
 };
