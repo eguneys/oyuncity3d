@@ -29,6 +29,9 @@ settings.data = {
   tileWidth: TILE_WIDTH,
   tileDepth: TILE_WIDTH / 6,
 
+  rowTiles: 6,
+  totalTiles: 6 * 4,
+
   dirLightColor: 0xffffff,
   dirLightIntensity: 0.7,
   hemisphereLightSkyColor: 0xffffff,

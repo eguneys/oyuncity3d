@@ -11,6 +11,12 @@ var offsetMatrix = [-1, 0,
                     1, 0,
                     0, 1];
 
+function getNextCorner(tile) {
+  return (Math.floor(tile / settings.data.rowTiles) + 1)
+    % 4;
+}
+
+
 function getTilePosI(idx) {
   var cornerIdx = Math.floor(idx / 6);
   var offsetIdx = idx % 6;
@@ -45,6 +51,7 @@ function getTilePos(cornerIdx, offsetIdx) {
 }
 
 module.exports = {
+  getNextCorner,
   getTilePos,
   getTilePosI
 };
