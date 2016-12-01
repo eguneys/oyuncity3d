@@ -24,6 +24,8 @@ settings.data = {
   arenaDepth: TILE_WIDTH / 6,
   unitSize: TILE_WIDTH / 4,
 
+  avatarSize: TILE_WIDTH * 0.4,
+
   boardWidth: TILE_WIDTH * 4.5 + TILE_WIDTH * 0.25,
 
   tileWidth: TILE_WIDTH,

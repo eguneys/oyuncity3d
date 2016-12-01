@@ -26,6 +26,9 @@ module.exports = function Materials(data) {
   this.boardTile3 = createBoardTile3(data);
 
   this.player = new THREE.MeshLambertMaterial({ color: Themes.yellow });
+
+  this.avatar1 = createAvatarMaterial(data);
+  this.avatar2 = createAvatarMaterial2(data);
 };
 
 function createOverlayMaterial() {
@@ -33,6 +36,50 @@ function createOverlayMaterial() {
     color: 0x00ffff
   });
 }
+
+function createAvatarShaderMaterial(data) {
+  var uniforms = {
+    texture2: { type: 't',
+                value: data.textures.avatar1
+              },
+    texture3: { type: 't',
+                value: data.textures.bubble
+              }
+  };
+  var vertexShader = data.shaders.vertex1;
+  var fragmentShader = data.shaders.fragment1;
+
+  var material = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader,
+    fragmentShader,
+    transparent: true
+  });
+  return material;
+};
+
+function createAvatarMaterial2(data) {
+  var avatarTexture = data.textures.avatar1;
+  return createTextureMaterial(data, avatarTexture);
+}
+
+function createAvatarMaterial(data) {
+  var avatarTexture = data.textures.bubble;
+  return createTextureMaterial(data, avatarTexture);
+}
+
+
+function createTextureMaterial(data, texture) {
+
+  var material = new THREE.MeshBasicMaterial({
+    map: texture,
+    color: 0xffffff,
+    fog: true,
+    transparent: true
+  });
+
+  return material;
+};
 
 function createArenaGrid(data) {
   var gridTexture = data.textures.wood1;

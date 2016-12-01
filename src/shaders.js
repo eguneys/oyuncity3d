@@ -1,16 +1,14 @@
 import * as THREE from 'three';
 
-module.exports = function Textures() {
-  this.textureLoader = new THREE.TextureLoader();
+module.exports = function Shaders() {
+  this.xhrLoader = new THREE.XHRLoader();
 
-  this.textureData = [
-    { id: 'wood1', path: '/assets/wood1.jpg' },
-    { id: 'kitten1', path: '/assets/kitten.jpg' },
-    { id: 'avatar1', path: '/assets/avatar1.png' },
-    { id: 'bubble', path: '/assets/speech-bubble.png' }
+  this.shaderData = [
+    { id: 'fragment1', path: '/assets/fragment1.glsl' },
+    { id: 'vertex1', path: '/assets/vertex1.glsl' },
   ];
 
-  this.totalFiles = this.textureData.length;
+  this.totalFiles = this.shaderData.length;
   this.filesProgress = 0;
   this.asyncComplete = () => {
     this.filesProgress++;
@@ -23,9 +21,10 @@ module.exports = function Textures() {
 
   this.load = (onComplete) => {
     this.onComplete = onComplete;
-    for (var key in this.textureData) {
-      var obj = this.textureData[key];
-      this.textureLoader
+    this.xhrLoader.responseType = 'text';
+    for (var key in this.shaderData) {
+      var obj = this.shaderData[key];
+      this.xhrLoader
         .load(obj.path, completeTexture(this, obj.id));
     }
   };
@@ -33,6 +32,7 @@ module.exports = function Textures() {
 
 function completeTexture(self, id) {
   return (texture) => {
+    var x = arguments;
     self[id] = texture;
     self.asyncComplete();
   };
