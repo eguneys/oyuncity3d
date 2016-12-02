@@ -1,6 +1,6 @@
 import Themes from './themes';
 
-var TILE_WIDTH = 40;
+var TILE_WIDTH = 42;
 var TILE_HEIGHT = 10;
 
 var settings = {};

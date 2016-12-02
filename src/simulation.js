@@ -14,6 +14,13 @@ function Simulation(ctrl) {
     return body;
   };
 
+  this.createHBody = (tile) => {
+    var body = {
+      position: tiles.getTilePosI(tile)
+    };
+    return body;
+  };
+
   this.update = (world, ts) => {
     for (var i = 0; i< world.players.length; i++) {
       var pBody = world.players[i];

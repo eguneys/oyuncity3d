@@ -11,7 +11,9 @@ module.exports = function(canvas, config) {
   this.data.simulation = new Simulation(this);
 
   this.initGame = () => {
+    addHome(this.data, 10);
     addPlayer(this.data, 0);
+    addPlayer(this.data, 1);
   };
 
   this.movePlayer = (player, tileForward) => {
@@ -27,4 +29,10 @@ function addPlayer(data, idx) {
 
   data.world.players[idx] = body;
   data.env.addPlayer(idx, body);
+}
+
+function addHome(data) {
+  var body = data.simulation.createHBody(5);
+
+  data.env.addHome(0, body);
 }

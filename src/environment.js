@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import Geometry from './geometry';
 import settings from './settings';
 import tiles from './tiles';
 import { createBoard } from './board';
 import Player from './player';
+import Home from './home';
 
 module.exports = function Environment(data) {
 
@@ -11,6 +11,7 @@ module.exports = function Environment(data) {
   this.lights = createLights(this.arena);
 
   this.players = [];
+  this.homes = [];
 
   createBoard(data);
 
@@ -26,11 +27,23 @@ module.exports = function Environment(data) {
     return player;
   };
 
+  this.addHome = (idx, body) => {
+    var home = new Home(data);
+    home.reset(body);
+
+    this.homes.push(home);
+    this.arena.add(home.mesh);
+  };
+
   this.update = (world) => {
     for (var i = 0; i< this.players.length; i++) {
       var pBody = world.players[i];
       var player = this.players[i];
       player.update(pBody);
+    }
+    for (i = 0; i < this.homes.length; i++) {
+      var home = this.homes[i];
+      home.update();
     }
   };
 };
