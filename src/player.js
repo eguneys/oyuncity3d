@@ -6,30 +6,31 @@ var geom = new THREE.CubeGeometry(
   settings.data.unitSize,
   settings.data.unitSize);
 
-var avatarGeom = new THREE.PlaneGeometry(
-  settings.data.avatarSize,
-  settings.data.avatarSize);
-var avatarGeom2 = new THREE.PlaneGeometry(
-  settings.data.avatarSize - 2,
-  settings.data.avatarSize - 5.5);
-
 module.exports = function Player(data) {
-  var avatar2 = new THREE.Mesh(avatarGeom2,
-                               data.materials.avatar2);
 
-  avatar2.position.setY(1.8);
-  avatar2.position.setZ(-1);
+  this.avatar = new THREE.Group();
 
-  var avatarGroup = new THREE.Group();
-  avatarGroup.add(avatar2);
-  avatarGroup.add(new THREE.Mesh(avatarGeom,
-                                 data.materials.avatar1));
-  this.avatar = avatarGroup;
+  var avatarImage = new THREE.Sprite(
+    data.materials
+      .createSpriteMaterialFromTexture(
+        data.textures.avatar1));
+  this.avatar.add(avatarImage);
+  var bubble = new THREE.Sprite(
+    data.materials
+      .createSpriteMaterialFromTexture(
+        data.textures.bubble));
+  this.avatar.add(bubble);
+
   this.mesh = new THREE.Mesh(geom,
                              data.materials.player);
+  
+  this.mesh.add(this.avatar);
 
-  this.avatar.setRotationFromQuaternion(data.cameraController.camera.quaternion);
+  // this.avatar.setRotationFromQuaternion(data.cameraController.camera.quaternion);
   // this.avatar.matrixAutoUpdate = false;
+
+  var scaleVector = new THREE.Vector3();
+  var scaleFactor = 24;
 
   this.position = {};
 
@@ -56,10 +57,16 @@ module.exports = function Player(data) {
            thisY,
            thisZ);
 
+    var scale = scaleVector.subVectors(
+      this.mesh.position,
+      data.cameraController.camera.position).length() /
+        scaleFactor;
+
+    this.avatar.scale.set(scale, scale, 1);
     this.avatar.position
-      .set(thisX,
-           thisY + settings.data.avatarSize * 2,
-           thisZ);
+      .set(0,
+           thisY + settings.data.avatarSize,
+           0);
   };
 
   this.reset = (body) => {

@@ -22,7 +22,6 @@ module.exports = function Environment(data) {
     player.reset(body);
     this.players.push(player);
     this.arena.add(player.mesh);
-    this.arena.add(player.avatar);
 
     return player;
   };
