@@ -13,11 +13,21 @@ function CameraController(w, h) {
     settings.data.cameraX    
   );
 
+  this.baseHudPosition = new THREE.Vector3(
+    0,
+    0,
+    100);
+
   this.toPosition = new THREE.Vector3(0,
                                       settings.data.cameraDepth,
                                       0);
 
   this.toTarget = new THREE.Vector3(0,0,0);
+
+  this.target = new THREE.Vector3(
+    -10, 
+    0,
+    -10);
 
   var camera = new THREE.PerspectiveCamera(
     settings.data.cameraFov,
@@ -25,18 +35,27 @@ function CameraController(w, h) {
     0.1,
     14000);
 
+  var ortho = new THREE.OrthographicCamera(
+    -settings.data.cameraX,
+    settings.data.cameraX,
+    settings.data.cameraX,
+    -settings.data.cameraX,
+    0.1,
+    14000);
+
   this.camera = camera;
+  this.ortho = ortho;
 
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 
   camera.position.copy(this.basePosition);
-  this.target = new THREE.Vector3(
-    -10, 
-    0,
-    -10);
+
+  ortho.position.copy(this.baseHudPosition);
 
   camera.lookAt(this.target);
+
+  ortho.lookAt(new THREE.Vector3(0, 0, 0));
 
   this.moveCamera = (pointData) => {
 

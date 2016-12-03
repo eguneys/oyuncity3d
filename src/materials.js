@@ -29,6 +29,14 @@ module.exports = function Materials(data) {
 
   this.avatar1 = createAvatarMaterial(data);
   this.avatar2 = createAvatarMaterial2(data);
+
+  this.roll1 = createButtonSprite(data);
+
+  this.playerHud1 = createButtonSprite(data);
+
+  this.createSpriteMaterialFromTexture = (texture) => {
+    return new THREE.SpriteMaterial({ map: texture });
+  };
 };
 
 function createOverlayMaterial() {
@@ -115,3 +123,8 @@ function createBoardTile3(data) {
     color: 0x00ff00
   });
 }
+
+
+function createButtonSprite(data) {
+  return new THREE.SpriteMaterial({ color: 0xffffff });
+};

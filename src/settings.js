@@ -31,6 +31,9 @@ settings.data = {
   tileWidth: TILE_WIDTH,
   tileDepth: TILE_WIDTH / 6,
 
+  playerHudWidth: 200,
+  playerHudHeight: 100,
+
   rowTiles: 6,
   totalTiles: 6 * 4,
 

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Geometry from './geometry';
 import Environment from './environment';
+import Hud from './hud';
 import CameraController from './camera';
 import settings from './settings';
 
@@ -9,11 +10,16 @@ module.exports = function(canvas, data) {
   var height = data.height;
 
   data.scene = createScene();
+  data.hudScene = createScene();
+
   data.container = createContainer(data.scene);
+  data.hudContainer = createContainer(data.hudScene);
+
   data.cameraController = new CameraController(width, height);
   data.renderer = createRenderer(canvas);
 
   data.env = new Environment(data);
+  data.hud = new Hud(data);
 
   var scene = data.scene;
   var cameraController = data.cameraController;
@@ -22,6 +28,8 @@ module.exports = function(canvas, data) {
   data.render = () => {
     data.renderer.render(data.scene,
                          data.cameraController.camera);
+    data.renderer.render(data.hudScene,
+                         data.cameraController.ortho);
   };
   
   data.renderRAF = function() {
