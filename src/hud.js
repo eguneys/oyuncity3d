@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import PlayerHud from './playerHud';
+import { PlayerHud, Align } from './playerHud';
 import settings from './settings';
 
 module.exports = function Hud(data) {
@@ -11,13 +11,13 @@ module.exports = function Hud(data) {
 
   this.roll = createRoll(data, this.hud);
 
-  this.p1 = createPlayerHud(data, this.hud);
+  this.p1 = createPlayerHud(data, this.hud, Align.LEFT);
 
   this.p1.mesh.position.set(-320 + playerHudWidth / 2,
                             320 - playerHudHeight / 2,
                             0);
 
-  this.p2 = createPlayerHud(data, this.hud);
+  this.p2 = createPlayerHud(data, this.hud, Align.RIGHT);
 
   this.p2.mesh.position.set(320 - playerHudWidth / 2,
                             -320 + playerHudHeight / 2,
@@ -36,8 +36,8 @@ function createRoll(data, hud) {
   hud.add(button);
 };
 
-function createPlayerHud(data, hud) {
-  var playerHud = new PlayerHud(data);
+function createPlayerHud(data, hud, align) {
+  var playerHud = new PlayerHud(data, align);
 
   data.hudContainer.add(playerHud.mesh);
   return playerHud;
