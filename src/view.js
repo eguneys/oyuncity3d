@@ -28,8 +28,6 @@ module.exports = function(canvas, data) {
   data.render = () => {
     data.renderer.render(data.scene,
                          data.cameraController.camera);
-    data.renderer.render(data.hudScene,
-                         data.cameraController.ortho);
   };
   
   data.renderRAF = function() {
