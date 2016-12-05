@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { PlayerHud, Align } from './playerHud';
 import settings from './settings';
 
-module.exports = function Hud(data) {
+export function Hud(data) {
 
   var playerHudWidth = settings.data.playerHudWidth;
   var playerHudHeight = settings.data.playerHudHeight;
@@ -11,17 +11,44 @@ module.exports = function Hud(data) {
 
   this.roll = createRoll(data, this.hud);
 
-  this.p1 = createPlayerHud(data, this.hud, Align.LEFT);
+  this.players = [];
 
-  this.p1.mesh.position.set(-320 + playerHudWidth / 2,
-                            320 - playerHudHeight / 2,
-                            0);
+  this.addPlayer = (player, align) => {
+    var p, x, y;
 
-  this.p2 = createPlayerHud(data, this.hud, Align.RIGHT);
+    p = createPlayerHud(data, this.hud, align);
 
-  this.p2.mesh.position.set(320 - playerHudWidth / 2,
-                            -320 + playerHudHeight / 2,
-                            0);
+    switch (align) {
+    case Align.LEFT:
+      x = -320 + playerHudWidth / 2;
+      y = 320 - playerHudHeight / 2;
+      break;
+    case Align.RIGHT:
+      x = 320 - playerHudWidth / 2;
+      y = - 320 + playerHudHeight / 2;
+      break;
+    }
+
+    p.mesh.position.set(x, y, 0);
+
+    this.players[player] = p;
+  };
+
+  this.currentTurn = 0;
+
+  this.setPlayerTurn = (turn) => {
+    if (turn != this.currentTurn) {
+      this.players[this.currentTurn].setShine(false);
+
+      this.currentTurn = turn;
+      this.players[this.currentTurn].setShine(true);
+    }
+  };
+
+  this.addPlayer(0, Align.LEFT);
+  this.addPlayer(1, Align.RIGHT);
+
+  this.players[this.currentTurn].setShine(true);
 };
 
 function createHud(data) {

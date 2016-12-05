@@ -34,8 +34,11 @@ module.exports = function Materials(data) {
 
   this.playerHud1 = createButtonSprite(data);
 
-  this.createSpriteMaterialFromTexture = (texture) => {
-    return new THREE.SpriteMaterial({ map: texture });
+  this.createSpriteMaterialFromTexture = (texture, transparent = false) => {
+    return new THREE.SpriteMaterial({
+      map: texture,
+      transparent: transparent
+    });
   };
 };
 

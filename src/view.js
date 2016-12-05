@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Geometry from './geometry';
 import Environment from './environment';
-import Hud from './hud';
+import { Player, Hud } from './hud';
 import CameraController from './camera';
 import settings from './settings';
 
