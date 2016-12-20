@@ -38,10 +38,10 @@ settings.data = {
   totalTiles: 6 * 4,
 
   dirLightColor: 0xffffff,
-  dirLightIntensity: 0.7,
-  hemisphereLightSkyColor: 0xffffff,
-  hemisphereLightGroundColor: 0xb1b1b1,
-  hemisphereLightIntensity: 0.74,
+  dirLightIntensity: 0.9,
+  hemisphereLightSkyColor: 0xaaaaaa,
+  hemisphereLightGroundColor: 0x000000,
+  hemisphereLightIntensity: 0.9,
   arenaSurfaceY: -200
 };
 

@@ -11,7 +11,7 @@ module.exports = function(canvas, config) {
   this.data.simulation = new Simulation(this);
 
   this.initGame = () => {
-    addHome(this.data, 10);
+    addHome(this.data, 3);
     addPlayer(this.data, 0);
     addPlayer(this.data, 1);
   };
@@ -31,8 +31,8 @@ function addPlayer(data, idx) {
   data.env.addPlayer(idx, body);
 }
 
-function addHome(data) {
+function addHome(data, idx) {
   var body = data.simulation.createHBody(5);
 
-  data.env.addHome(0, body);
+  data.env.addHome(idx, body);
 }

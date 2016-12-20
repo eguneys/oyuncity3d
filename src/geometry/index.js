@@ -4,7 +4,7 @@ import Loader from '../loader';
 module.exports = function Geometry() {
   var jsonLoader = new THREE.JSONLoader();
   var loadData = [
-    { id: 'home1', path: '/assets/3d/home2.json' }
+    { id: 'home1', path: '/assets/3d/home.json' }
   ];
 
   const onLoad = (id, geometry, materials) => {

@@ -8,23 +8,18 @@ var geom = new THREE.CubeGeometry(
 
 module.exports = function Home(data) {
 
-  this.mesh = new THREE.Mesh(data.geometries.home1.geometry,
+  this.height = 10;
+  this.width = 10;
+  var geom = data.geometries.home1.geometry;
+  var material = new THREE.MeshLambertMaterial({
+  });
 
-                             new THREE.MeshFaceMaterial(data.geometries.home1.materials));
+  this.mesh = new THREE
+    .Mesh(geom, material);
 
   this.position = {};
 
   this.targetScale = 4;
-
-  this.boundingBox = new THREE.Box3().setFromObject(this.mesh);
-
-  this.getHeight = () => {
-    return this.boundingBox.getSize().y;
-  };
-
-  this.getWidth = () => {
-    return this.boundingBox.getSize().x;
-  };
 
   this.updatePosition = () => {
     var x = this.position.x;
@@ -33,14 +28,17 @@ module.exports = function Home(data) {
     var thisY = settings.data.arenaElevation
         + settings.data.arenaDepth * 2;
 
-    var thisX = x - this.getHeight() / 2;
-    var thisZ = z - this.getWidth() / 2;
+    var thisX = x - this.height / 2;
+    var thisZ = z - this.width / 2;
 
     this.mesh.position
-        .set(thisX,
-             thisY,
-             thisZ);
+        .set(0,
+             0,
+             0);
 
+    this.mesh.scale.set(this.height,
+                        this.width,
+                        this.width);
   };
 
   this.setPosition = (pos) => {

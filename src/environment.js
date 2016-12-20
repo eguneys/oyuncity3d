@@ -32,7 +32,7 @@ module.exports = function Environment(data) {
     home.reset(body);
 
     this.homes.push(home);
-    this.arena.add(home.mesh);
+    data.tiles[idx].add(home.mesh);
   };
 
   this.update = (world) => {
@@ -78,13 +78,21 @@ function createArena(data) {
   boardWrapper.position.x = - w * 0.02;
   table.add(boardWrapper);
 
+  data.tiles = {};
+
   for (var i = 0; i < 4; i++) {
     createTile(data, boardWrapper, i);
-    createTile2(data, boardWrapper, i, 1);
-    createTile2(data, boardWrapper, i, 2);
-    createTile2(data, boardWrapper, i, 3);
-    createTile2(data, boardWrapper, i, 4);
-    createTile2(data, boardWrapper, i, 5);
+    var tile1 = createTile2(data, boardWrapper, i, 1);
+    var tile2 = createTile2(data, boardWrapper, i, 2);
+    var tile3 = createTile2(data, boardWrapper, i, 3);
+    var tile4 = createTile2(data, boardWrapper, i, 4);
+    var tile5 = createTile2(data, boardWrapper, i, 5);
+
+    data.tiles[i * 4 + 1] = tile1;
+    data.tiles[i * 4 + 2] = tile2;
+    data.tiles[i * 4 + 3] = tile3;
+    data.tiles[i * 4 + 4] = tile4;
+    data.tiles[i * 4 + 5] = tile5;
   }
   return arena;
 }
@@ -106,7 +114,6 @@ function createTile(data, arena, idx) {
   tile.position.z = tilePos.z;
   
   arena.add(tile);
-
   return tile;
 }
 
@@ -141,7 +148,8 @@ function createTile2(data, arena, cornerIdx, offsetIdx) {
   tile.position.x = tilePos.x;
   tile.position.z = tilePos.z;
   
-  arena.add(tile); 
+  arena.add(tile);
+  return tile;
 }
 
 function createLights(terrain) {
