@@ -9,6 +9,8 @@ var streamify = require('gulp-streamify');
 var bulkify = require('bulkify');
 var csso = require('gulp-csso');
 
+var livereload = require('gulp-livereload');
+
 var sources = ['./src/main.js'];
 var destination = './build';
 var onError = function(error) {
@@ -27,6 +29,11 @@ gulp.task('dev', ['assets'], function() {
   var opts = watchify.args;
   opts.debug = true;
   opts.standalone = standalone;
+  opts.insertGlobalVars = {
+    THREE: function(file, dir) {
+      return "require('three')";
+    }
+  };
   var bundleStream = watchify(browserify(sources, opts))
       .transform('babelify',
                  { presets: ["es2015"],
@@ -38,8 +45,11 @@ gulp.task('dev', ['assets'], function() {
     return bundleStream.bundle()
       .on('error', onError)
       .pipe(source('gulpp.js'))
-      .pipe(gulp.dest(destination));
+      .pipe(gulp.dest(destination))
+      .pipe(livereload());
   }
+
+  livereload.listen();
 
   return rebundle();
 });

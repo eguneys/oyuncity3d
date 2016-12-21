@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import createTextGeometry from 'three-bmfont-text';
 import settings from './settings';
 import Themes from './themes';
 
@@ -39,6 +40,22 @@ module.exports = function Materials(data) {
       map: texture,
       transparent: transparent
     });
+  };
+
+  this.createFontMesh = (text) => {
+    var geometry = createTextGeometry({
+      width: 100,
+      font: data.fonts.rubik,
+      text: text
+    });
+
+    var material = new THREE.MeshBasicMaterial({
+      map: data.textures.rubik,
+      transparent: true,
+      color: 'rgb(230, 230, 230)'
+    });
+
+    return new THREE.Mesh(geometry, material);
   };
 };
 

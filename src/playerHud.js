@@ -26,6 +26,7 @@ export function PlayerHud(data, align) {
   this.mesh.add(hudBg.sprite);
   this.mesh.add(this.hudShine.sprite);
 
+  
   var hudImage = new View(
     data.materials
       .createSpriteMaterialFromTexture(

@@ -3,6 +3,7 @@ import Textures from './textures';
 import Shaders from './shaders';
 import Materials from './materials';
 import Geometry from './geometry';
+import Font from './fonts';
 
 module.exports = function Assets(data, onLoad) {
 
@@ -17,7 +18,11 @@ module.exports = function Assets(data, onLoad) {
         var materials = new Materials(data);
 
         data.materials = materials;
-        onLoad(data);
+
+        new Font(function(fonts) {
+          data.fonts = fonts;
+          onLoad(data);
+        });
       });
     });
   });

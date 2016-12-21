@@ -9,7 +9,8 @@ module.exports = function Textures() {
     { id: 'avatar1', path: '/assets/avatar1.png' },
     { id: 'bubble', path: '/assets/speech-bubble.png' },
     { id: 'bgbutton', path: '/assets/buttons/button.png' },
-    { id: 'shine', path: '/assets/buttons/shine_03.png' }
+    { id: 'shine', path: '/assets/buttons/shine_03.png' },
+    { id: 'rubik', path: '/assets/rubik.png' }
   ];
 
   this.totalFiles = this.textureData.length;

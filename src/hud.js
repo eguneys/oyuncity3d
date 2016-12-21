@@ -49,6 +49,12 @@ export function Hud(data) {
   this.addPlayer(1, Align.RIGHT);
 
   this.players[this.currentTurn].setShine(true);
+
+  var hudText = data.materials
+    .createFontMesh("this bimtap text\n is rendered \n newline");
+  var textLayout = hudText.geometry.layout;
+  hudText.position.set(0, 0, 0);
+  data.hudContainer.add(hudText);
 };
 
 function createHud(data) {

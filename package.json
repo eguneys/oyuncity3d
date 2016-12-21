@@ -27,8 +27,11 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "budo": "^9.3.0",
     "cat-ascii-faces": "^2.0.0",
     "gsap": "^1.19.0",
+    "gulp-livereload": "^3.8.1",
+    "load-bmfont": "^1.2.4",
     "three": "^0.82.1"
   }
 }
