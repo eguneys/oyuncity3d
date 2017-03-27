@@ -14,6 +14,7 @@ p {
   font-size: 2em;
 }
 
-.cat {
-  color: white;
+#glstack {
+  height: 900px;
+  width: 720px;
 }
