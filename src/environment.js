@@ -20,14 +20,29 @@ function addBoard(arena) {
     color: 0xcccccc
   });
   
-  const boardGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+  const boardGeometry = new THREE.PlaneGeometry(100, 100, 100, 100);
   const boardMesh = new THREE.Mesh(boardGeometry, boardMaterial);
 
   boardMesh.rotation.z = degToRad(45);
-  boardMesh.rotation.x = degToRad(-10);
+  boardMesh.rotation.x = degToRad(-60);
   //boardMesh.position.y = 10;
 
   arena.add(boardMesh);
+
+  addPlayer(boardMesh);
+}
+
+function addPlayer(board) {
+  var player = new THREE.Mesh(
+    new THREE.BoxGeometry(10, 10, 10),
+    new THREE.MeshBasicMaterial({
+      color: 0xaabbcc
+    }));
+
+  player.position.set(-40, -40, 10);
+
+  board.add(player);
+  
 }
 
 function addSkyBox(arena) {

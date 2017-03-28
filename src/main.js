@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CameraController } from './camera';
 import { Environment } from './environment';
+import { Hud } from './hud';
 import { Assets } from './assets';
 import { Loop } from './loop';
 
@@ -23,6 +24,9 @@ function initThree(data) {
   data.render = () => {
     data.renderer.render(data.scene,
                          data.cameraController.camera);
+
+    data.renderer.render(data.hudScene,
+                         data.cameraController.orthoCamera);
   };
 
   data.update = () => {
@@ -32,11 +36,14 @@ function initThree(data) {
 
   const onLoad = () => {
     data.scene = initScene();
+    data.hudScene = initScene();
     data.container = initContainer(data.scene);
     data.cameraController = new CameraController(width, height);
     data.renderer = initRenderer(data.canvas);
 
     data.environment = new Environment(data);
+    data.hud = new Hud(data);
+
     loop.run();
   };
 

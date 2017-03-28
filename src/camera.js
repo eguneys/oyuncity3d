@@ -6,7 +6,7 @@ function CameraController(w, h) {
         zNear = 1,
         zFar = 2000;
 
-  var camera = new THREE.PerspectiveCamera(
+  const camera = new THREE.PerspectiveCamera(
     fov,
     aspect,
     zNear,
@@ -28,7 +28,26 @@ function CameraController(w, h) {
 
   camera.position.copy(this.basePosition);
 
-  // camera.lookAt(this.target);
+  camera.lookAt(this.target);
+
+  const width = 100;
+  const height = width / aspect;
+
+  const orthoLeft = -width,
+        orthoRight = width,
+        orthoTop = height,
+        orthoBottom = -height;
+
+  const orthoCamera = new THREE.OrthographicCamera(
+    orthoLeft,
+    orthoRight,
+    orthoTop,
+    orthoBottom,
+    0,
+    30
+  );
+  this.orthoCamera = orthoCamera;
+  
 }
 
 
