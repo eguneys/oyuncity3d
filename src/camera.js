@@ -18,8 +18,8 @@ function CameraController(w, h) {
 
   this.basePosition = new THREE.Vector3(
     0,
-    -100,
-    250
+    0,
+    160
   );
 
   this.target = new THREE.Vector3(
