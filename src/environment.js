@@ -40,7 +40,6 @@ function addPlayer(board) {
     }));
 
   player.position.set(-40, -40, 10);
-
   board.add(player);
   
 }
@@ -58,7 +57,7 @@ function addSkyBox(arena) {
     }));
   }
 
-  const skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+  const skyMaterial = new THREE.MultiMaterial(materialArray);
   const skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
   
   arena.add(skyBox);
@@ -103,6 +102,10 @@ function addBunchOfBoxes(data, arena) {
   table.add(glass);
 
   arena.add(table);
+
+  const text = data.fonts.montserrat;
+  text.position.set(0, 0, -10);
+  table.add(text);
 }
 
 function initArena(data) {

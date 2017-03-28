@@ -30,7 +30,10 @@ function CameraController(w, h) {
 
   camera.lookAt(this.target);
 
-  const width = 100;
+
+  // orthographic camera for hud 
+  // https://www.evermade.fi/en/pure-three-js-hud/
+  const width = w;
   const height = width / aspect;
 
   const orthoLeft = -width,
@@ -43,7 +46,7 @@ function CameraController(w, h) {
     orthoRight,
     orthoTop,
     orthoBottom,
-    0,
+    -30,
     30
   );
   this.orthoCamera = orthoCamera;

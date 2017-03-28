@@ -27,7 +27,9 @@
   },
   "dependencies": {
     "cat-ascii-faces": "^2.0.0",
+    "load-bmfont": "^1.3.0",
     "three": "^0.84.0",
+    "three-bmfont-text": "^2.2.1",
     "three-orbit-controls": "^82.1.0"
   }
 }

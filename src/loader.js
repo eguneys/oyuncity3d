@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import bmfontLoader from 'load-bmfont';
+
 function LoadManager() {
 
   this.cache = {};
@@ -20,11 +23,17 @@ function LoadManager() {
       const fComplete = onFileComplete.bind(null, key);
 
       switch (type) {
+      case 'font': {
+        loadFont(url, fComplete);
+      } break;
       case 'file': {
         loadFile(url, fComplete);
       } break;
       case 'image': {
         loadImage(url, fComplete);
+      } break;
+      case 'texture': {
+        loadTexture(url, fComplete);
       } break;
       case 'material': {
         loadFile(url, fComplete);
@@ -33,13 +42,16 @@ function LoadManager() {
     }
   };
 
-  this.file = (key, url) => {
-    this.setCacheEntry(key, url, 'file');
+  const setCacheEntryWithType = (type) => {
+    return (key, url) => {
+      this.setCacheEntry(key, url, type);
+    };
   };
 
-  this.image = (key, url) => {
-    this.setCacheEntry(key, url, 'image');
-  };
+  this.file = setCacheEntryWithType('file');
+  this.font = setCacheEntryWithType('font');
+  this.image = setCacheEntryWithType('image');
+  this.texture = setCacheEntryWithType('texture');
     
 
   this.get = (key) => {
@@ -63,8 +75,24 @@ function LoadManager() {
   };
 }
 
+function loadFont(url, onLoad) {
+  bmfontLoader(url, function(err, font) {
+    onLoad(font);
+  });
+}
+
 function loadMaterial(url, onLoad) {
   loadFile(url, onLoad);
+}
+
+function loadTexture(url, onLoad, onError) {
+  textureLoader.load(url, function(texture) {
+    onLoad(texture);
+  },
+                     function() {},
+                     function(xhr) {
+                       throw xhr;
+                     });
 }
 
 function loadFile(url, onLoad) {
@@ -91,6 +119,7 @@ function loadImage(url, onLoad) {
   });
 }
 
+const textureLoader = new THREE.TextureLoader();
 const loader = new LoadManager();
 
 export {

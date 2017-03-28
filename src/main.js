@@ -5,7 +5,6 @@ import { Hud } from './hud';
 import { Assets } from './assets';
 import { Loop } from './loop';
 
-
 function init(element, config = {}) {
   const data = {};
 
@@ -18,8 +17,6 @@ function init(element, config = {}) {
 }
 
 function initThree(data) {
-
-  const { width, height } = data;
 
   data.render = () => {
     data.renderer.render(data.scene,
@@ -38,7 +35,7 @@ function initThree(data) {
     data.scene = initScene();
     data.hudScene = initScene();
     data.container = initContainer(data.scene);
-    data.cameraController = new CameraController(width, height);
+    data.cameraController = new CameraController(data.width, data.height);
     data.renderer = initRenderer(data.canvas);
 
     data.environment = new Environment(data);
