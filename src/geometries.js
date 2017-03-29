@@ -5,8 +5,8 @@ function Geometries() {
   // apply texture
   // http://stackoverflow.com/questions/19182298/how-to-texture-a-three-js-mesh-created-with-shapegeometry
 
-  this.makeRoundShape = (width, height, radius) => {
-
+  // https://threejs.org/examples/#webgl_geometry_shapes
+  this.makeRoundShape = (width, height, radius, options = {}) => {
     const roundedRectShape = new THREE.Shape();
 
     ( function roundedRect( ctx, x, y, width, height, radius){
@@ -25,14 +25,32 @@ function Geometries() {
       // const bottom = - height / 2;
 
 
-      ctx.moveTo(left, top);
-      ctx.lineTo(left, bottom);
-      // ctx.quadraticCurveTo(left, bottom, left + radius, bottom);
-      ctx.lineTo(right - radius, bottom);
-      ctx.quadraticCurveTo(right, bottom, right, bottom + radiusY);
-      ctx.lineTo(right, top - radiusY);
-      ctx.quadraticCurveTo(right, top, right - radius, top);
-      ctx.lineTo(left, top);
+      ctx.moveTo(left, top - radiusY);
+      if (options.leftBottom) {
+        ctx.lineTo(left, bottom + radiusY);
+        ctx.quadraticCurveTo(left, bottom, left + radius, bottom);
+      } else {
+        ctx.lineTo(left, bottom);
+      }
+      if (options.rightBottom) {
+        ctx.lineTo(right - radius, bottom);
+        ctx.quadraticCurveTo(right, bottom, right, bottom + radiusY);
+      } else {
+        ctx.lineTo(right, bottom);
+      }
+      if (options.rightTop) {
+        ctx.lineTo(right, top - radiusY);
+        ctx.quadraticCurveTo(right, top, right - radius, top);
+      } else {
+        ctx.lineTo(right, top);
+      }
+      if (options.leftTop) {
+        ctx.lineTo(left + radius, top);
+        ctx.quadraticCurveTo(left, top, left, top - radiusY);
+      } else {
+        ctx.lineTo(left, top);
+        ctx.lineTo(left, top-radiusY);
+      }
 
       // ctx.moveTo( x, y + radius );
       // ctx.lineTo( x, y + height - radius );

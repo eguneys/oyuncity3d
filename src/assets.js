@@ -11,11 +11,29 @@ function Assets(data, onLoad) {
 
   loader.texture('ftexture', '/assets/images/pravatar.png');
   // https://www.fontsquirrel.com/fonts/baloo
-  loader.texture('montserrat.glyph', '/assets/fonts/baloog.png');
-  loader.font('montserrat', '/assets/fonts/baloog.fnt');
 
-  loader.texture('baloo.glyph', '/assets/fonts/baloo.png');
-  loader.font('baloo', '/assets/fonts/baloo.fnt');
+  // loader.texture('montserrat.glyph', '/assets/fonts/baloog.png');
+  // loader.font('montserrat', '/assets/fonts/baloog.fnt');
+
+  loader.texture('montserrat.glyph', '/assets/fonts/robotoblue.png');
+  loader.font('montserrat', '/assets/fonts/robotoblue.fnt');
+
+  loader.texture('robotogreen.glyph', '/assets/fonts/robotogreen.png');
+  // loader.font('robotogreen', '/assets/fonts/robotogreen.fnt');
+
+  loader.texture('robotoblue.glyph', '/assets/fonts/robotoblue.png');
+  // loader.font('robotoblue', '/assets/fonts/robotoblue.fnt');
+
+  loader.texture('robotored.glyph', '/assets/fonts/robotored.png');
+  // loader.font('robotored', '/assets/fonts/robotored.fnt');
+
+  loader.texture('robotoyellow.glyph', '/assets/fonts/robotoyellow.png');
+  // loader.font('robotoyellow', '/assets/fonts/robotoyellow.fnt');
+
+  loader.texture('baloo.glyph', '/assets/fonts/baloowhite.png');
+  // loader.font('baloo', '/assets/fonts/baloowhite.fnt');
+
+  loader.font('robotocolor', '/assets/fonts/robotoblue.fnt');
 
   loader.start(() => {
 

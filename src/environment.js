@@ -103,9 +103,9 @@ function addBunchOfBoxes(data, arena) {
 
   arena.add(table);
 
-  const text = data.fonts.montserrat;
-  text.position.set(0, 0, -10);
-  table.add(text);
+  // const text = data.fonts.montserrat;
+  // text.position.set(0, 0, -10);
+  // table.add(text);
 }
 
 function initArena(data) {

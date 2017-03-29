@@ -7,46 +7,42 @@ const MSDFShader = require('three-bmfont-text/shaders/basic');
 
 function Fonts(data) {
 
-  const font = loader.get('montserrat');
-  const glyphs = loader.get('montserrat.glyph');
+  const greenFont = loader.get('robotocolor');
+  const greenGlyph = loader.get('robotogreen.glyph');
 
-  const baloo = loader.get('baloo');
-  const balooGlyp = loader.get('baloo.glyph');
+  const blueFont = loader.get('robotocolor');
+  const blueGlyph = loader.get('robotoblue.glyph');
 
+  const redFont = loader.get('robotocolor');
+  const redGlyph = loader.get('robotored.glyph');
 
-  this.makeFontMesh2 = (text) => {
+  const yellowFont = loader.get('robotocolor');
+  const yellowGlyph = loader.get('robotoyellow.glyph');
 
-    const geometry = createGeometry({
-      font: baloo,
-      flipY: glyphs.flipY
-    });
+  const whiteFont = loader.get('robotocolor');
+  const whiteGlyph = loader.get('baloo.glyph');
 
-    geometry.update(text);
-
-    const material = new THREE.MeshBasicMaterial({
-      map: balooGlyp,
-      transparent: true,
-      // color: 0xaaffff
-      // side: THREE.DoubleSide
-    });
-
-    // const material = new THREE.RawShaderMaterial(MSDFShader({
-    //   map: glyphs,
-    //   // transparent: true,
-    //   color: 0x000000,
-    //   alphaTest: 0.4
-    // }));
-
-    const mesh = new THREE.Mesh(geometry, material);
-
-    const layout = geometry.layout;
-    // mesh.position.set(0, -layout.descender + layout.height, 0);
-
-    return mesh;
+  this.makeColorFont = (color) => {
+    switch (color) {
+    case 'green': return this.makeGreenFont;
+    case 'blue': return this.makeBlueFont;
+    case 'red': return this.makeRedFont;
+    case 'yellow': return this.makeYellowFont;
+    };
+    return this.makeGreenFont;
   };
 
-  this.makeFontMesh = (text) => {
+  this.makeGreenFont = withFontMesh(greenFont, greenGlyph);
+  this.makeBlueFont = withFontMesh(blueFont, blueGlyph);
+  this.makeRedFont = withFontMesh(redFont, redGlyph);
+  this.makeYellowFont = withFontMesh(yellowFont, yellowGlyph);
 
+
+  this.makeWhiteFont = withFontMesh(whiteFont, whiteGlyph);
+}
+
+function withFontMesh(font, glyphs) {
+  return (text) => {
     const geometry = createGeometry({
       font: font,
       flipY: glyphs.flipY
@@ -56,9 +52,7 @@ function Fonts(data) {
 
     const material = new THREE.MeshBasicMaterial({
       map: glyphs,
-      transparent: true,
-      // color: 0xaaffff
-      // side: THREE.DoubleSide
+      transparent: true
     });
 
     // const material = new THREE.RawShaderMaterial(MSDFShader({
@@ -71,12 +65,10 @@ function Fonts(data) {
     const mesh = new THREE.Mesh(geometry, material);
 
     const layout = geometry.layout;
-    // mesh.position.set(0, -layout.descender + layout.height, 0);
-
     return mesh;
   };
+};
 
-  this.montserrat = this.makeFontMesh('lorem ipsum dolor');
-}
+
 
 export { Fonts }
