@@ -19,7 +19,7 @@ function textureTransparentGradient(color) {
   context.rect( 0, 0, size, size );
   var gradient = context.createLinearGradient( 0, 0, 0, size );
   gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-  gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
+  gradient.addColorStop(1, 'rgba(0, 0, 0, 0.6)');
   context.fillStyle = gradient;
   context.fill();
 

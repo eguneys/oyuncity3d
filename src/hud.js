@@ -5,7 +5,7 @@ import { textureTransparentGradient } from './util';
 function Hud(data) {
   this.container = initContainer(data);
 
-  addBunchOfText(data, this.container);
+  // addBunchOfText(data, this.container);
 
   addPlayerText(data, this.container);
 }
@@ -24,12 +24,13 @@ function positionTextMesh(mesh, scale, x, y, centerX) {
 
 function addPlayerText(data, container) {
   const width = 720 * 0.70,
-        height = 900 * 0.15;
+        height = 900 * 0.2;
 
+  const offset = 0;
 
   const plane = new THREE.Object3D();
-  plane.position.set(- data.width + width / 2 + 10,
-                     data.height - height / 2 - 10,
+  plane.position.set(- data.width + width / 2 + offset,
+                     data.height - height / 2 - offset,
                      0);
   container.add(plane);
 
@@ -38,10 +39,13 @@ function addPlayerText(data, container) {
   bgTexture.needsUpdate = true;
 
   const material = new THREE.MeshBasicMaterial({
-    map: bgTexture,
-    transparent: true
+    // map: bgTexture,
+    color: 'rgba(0, 0, 0)',
+    transparent: true,
+    opacity: 0.8
   });
-  const geometry = new THREE.PlaneGeometry(width, height);
+  // const geometry = new THREE.PlaneGeometry(width, height);
+  const geometry = data.geometries.makeRoundShape(width, height, 80);
   const background = new THREE.Mesh(geometry, material);
   plane.add(background);
 
@@ -52,7 +56,7 @@ function addPlayerText(data, container) {
   const avatarGeometry = new THREE.PlaneGeometry(avatarWidth, height);
   const avatarMesh = new THREE.Mesh(avatarGeometry, avatarMaterial);
   avatarMesh.position.set(-width / 2 + avatarWidth / 2, 0, 1);
-  plane.add(avatarMesh);
+  // plane.add(avatarMesh);
 
 
   const rankAnchor = new THREE.Object3D();
