@@ -35,6 +35,9 @@ function LoadManager() {
       case 'texture': {
         loadTexture(url, fComplete);
       } break;
+      case 'atlas': {
+        loadAtlas(url, fComplete);
+      } break;
       case 'material': {
         loadFile(url, fComplete);
       } break;
@@ -52,6 +55,7 @@ function LoadManager() {
   this.font = setCacheEntryWithType('font');
   this.image = setCacheEntryWithType('image');
   this.texture = setCacheEntryWithType('texture');
+  this.atlas = setCacheEntryWithType('atlas');
     
 
   this.get = (key) => {
@@ -93,6 +97,36 @@ function loadTexture(url, onLoad, onError) {
                      function(xhr) {
                        throw xhr;
                      });
+}
+
+function loadAtlas(url, onLoad) {
+  const atlasUrl = url + '.json';
+  const pngUrl = url + '.png';
+
+  // https://gist.github.com/momo-the-monster/9471364
+  loadFile(atlasUrl, function(json) {
+    json = JSON.parse(json);
+    textureLoader.load(pngUrl, function(texture) {
+      const texs = [];
+
+      for (var key in json.frames) {
+        var tex = texture.clone();
+        var frame = json.frames[key];
+        
+        // tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.x = (frame.w / texture.image.width);
+        tex.repeat.y = (frame.h / texture.image.height);
+        tex.offset.x = (Math.abs(frame.x) / texture.image.width);
+        tex.offset.y = (Math.abs(frame.y) / texture.image.height);
+
+        tex.needsUpdate = true;
+
+        // tex.repeat.x = 0.5;
+        texs.push(tex);
+      }
+      onLoad(texs);
+    });
+  });
 }
 
 function loadFile(url, onLoad) {

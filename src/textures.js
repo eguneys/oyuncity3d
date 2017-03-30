@@ -4,6 +4,11 @@ import { hexToDec } from './util';
 
 
 function Textures(data) {
+  this.boxpackTexture = loader.get('boxpack');
+  this.boxpackTexture2 = loader.get('boxpackt');
+
+  this.pmTexture = loader.get('pmt');
+
   this.avatarTexture = loader.get('ftexture');
 
   this.makeTextureGradient = (color1, color2, alpha1 = 1, alpha2 = 1) => {

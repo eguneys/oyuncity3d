@@ -1,0 +1,69 @@
+
+pack.png
+size: 512,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+oyuncitybox
+  rotate: false
+  xy: 2, 15
+  size: 164, 39
+  orig: 164, 39
+  offset: 0, 0
+  index: 11
+oyuncitybox
+  rotate: false
+  xy: 168, 16
+  size: 164, 38
+  orig: 164, 38
+  offset: 0, 0
+  index: 4
+oyuncitybox
+  rotate: false
+  xy: 2, 2
+  size: 164, 11
+  orig: 164, 11
+  offset: 0, 0
+  index: 8
+oyuncitybox
+  rotate: false
+  xy: 334, 16
+  size: 42, 38
+  orig: 42, 38
+  offset: 0, 0
+  index: 5
+oyuncitybox
+  rotate: false
+  xy: 378, 15
+  size: 42, 39
+  orig: 42, 39
+  offset: 0, 0
+  index: 12
+oyuncitybox
+  rotate: false
+  xy: 422, 15
+  size: 41, 39
+  orig: 41, 39
+  offset: 0, 0
+  index: 10
+oyuncitybox
+  rotate: false
+  xy: 465, 16
+  size: 41, 38
+  orig: 41, 38
+  offset: 0, 0
+  index: 3
+oyuncitybox
+  rotate: false
+  xy: 168, 3
+  size: 42, 11
+  orig: 42, 11
+  offset: 0, 0
+  index: 9
+oyuncitybox
+  rotate: false
+  xy: 212, 3
+  size: 41, 11
+  orig: 41, 11
+  offset: 0, 0
+  index: 7

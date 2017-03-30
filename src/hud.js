@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import { NinePlaneGeometry } from './nineplane';
+
 function Hud(data) {
   this.vm = {
     nodePlayers: {}
@@ -7,7 +9,7 @@ function Hud(data) {
 
   this.container = initContainer(data);
 
-  // addBunchOfText(data, this.container);
+  addBunchOfText(data, this.container);
 
   this.vm.nodePlayers['topleft'] =
     addPlayerText(data, this.container, 'topleft', '1');
@@ -49,20 +51,20 @@ function Hud(data) {
   };
 
 
-  var turn = 0;
-  setInterval(() => {
-    this.updateCash('topleft', turn++);
-    this.updateAsset('topleft', turn);
+  // var turn = 0;
+  // setInterval(() => {
+  //   this.updateCash('topleft', turn++);
+  //   this.updateAsset('topleft', turn);
 
-    // this.updateRanks('topleft', 'topright');
-    // this.updateRanks('bottomleft', 'bottomright');
+  //   // this.updateRanks('topleft', 'topright');
+  //   // this.updateRanks('bottomleft', 'bottomright');
 
-    // this.updateRanks('topleft', 'bottomright');
-    // this.updateRanks('bottomleft', 'topright');
+  //   // this.updateRanks('topleft', 'bottomright');
+  //   // this.updateRanks('bottomleft', 'topright');
 
-    this.updateRanks('topleft', 'bottomleft');
-    this.updateRanks('topright', 'bottomright');
-  }, 1000);
+  //   this.updateRanks('topleft', 'bottomleft');
+  //   this.updateRanks('topright', 'bottomright');
+  // }, 1000);
 }
 
 function updateTextMeshText(mesh, text) {
@@ -386,14 +388,160 @@ function addPlayerText(data, container, orientation, rankText) {
 
 function addBunchOfText(data, container) {
 
-  const material = new THREE.MeshBasicMaterial({
-    color: 0xffff00
-  });
-  const geometry = new THREE.PlaneGeometry(800, 800);
-  const plane = new THREE.Mesh(geometry, material);
-  plane.position.set(0, 0, 0);
-  container.add(plane);
-  
+  function basicMat(tex) {
+    return new THREE.MeshBasicMaterial({
+      map: tex
+      // color: 0xffff00
+    });
+  }
+
+  // http://www.inear.se/2013/07/cube-slam-behind-the-three-scene/
+  function addPlane(x, y, w, h, mat, manipulate) {
+    // const geometry = new THREE.PlaneGeometry(w, h, 3, 3);
+    const geometry = new NinePlaneGeometry(w, h);
+
+    if (manipulate) {
+      /*
+        -------
+        |0|1|2|
+        -------
+      */
+      const uvs = geometry.faceVertexUvs[0];
+      // console.table(uvs.map(uv => uv.map(v => `${Math.floor(v.x* 10) / 10} ${Math.floor(v.y  *10) / 10}`)));
+
+      var marginTop = 0.1
+      , marginLeft = marginTop
+      , marginBottom = 0.9
+      , marginRight = marginBottom;
+
+      var face = uvs[0];
+      face[1].y = 0.9;
+      face[2].x = 0.1;
+      face = uvs[1];
+      face[0].y = 0.9;
+      face[1].x = 0.1;
+      face[1].y = 0.9;
+      face[2].x = 0.1;
+
+      face = uvs[2];
+      // .3 1 / .3 .6  / .6 1
+      face[0].x = 0.1;
+      face[1].x = 0.1;
+      face[1].y = 0.9;
+      face[2].x = 0.9;
+      face = uvs[3];
+      // .3 .6 / .6 .6  / .6 1
+      face[0].x = 0.1;
+      face[0].y = 0.9;
+      face[1].x = 0.9;
+      face[1].y = 0.9;
+      face[2].x = 0.9;
+      face = uvs[4];
+      // .6 1 / .6 .6  / 1 1
+      face[0].x = 0.9;
+      face[1].x = 0.9;
+      face[1].y = 0.9;
+      face = uvs[5];
+      // .6 .6  / 1 .6 / 1 1
+      face[0].x = 0.9;
+      face[0].y = 0.9;
+      face[1].y = 0.9;
+      geometry.uvsNeedUpdate = true;
+
+      const cornerDistW = (w - 100)/2;
+      const cornerDistH = (h - 100)/2;
+
+      var verts = geometry.vertices;
+
+
+      verts[1].x = -cornerDistW;
+      verts[5].x = -cornerDistW;
+      verts[9].x = -cornerDistW;
+      verts[13].x = -cornerDistW;
+
+      verts[2].x = cornerDistW;
+      verts[6].x = cornerDistW;
+      verts[10].x = cornerDistW;
+      verts[14].x = cornerDistW;
+
+      //height
+      verts[4].y = cornerDistH;
+      verts[5].y = cornerDistH;
+      verts[6].y = cornerDistH;
+      verts[7].y = cornerDistH;
+
+      verts[8].y = -cornerDistH;
+      verts[9].y = -cornerDistH;
+      verts[10].y = -cornerDistH;
+      verts[11].y = -cornerDistH;
+    }
+
+    const plane = new THREE.Mesh(geometry, mat);
+    plane.position.set(x, y, 0);
+    container.add(plane);
+
+    return plane;
+  }
+
+  const aTexture = data.textures.avatarTexture;
+  const tTexture = data.textures.boxpackTexture2;
+  const iTexture = data.textures.boxpackTexture;
+
+  aTexture.repeat.x = 0.5;
+  aTexture.offset.x = 0.5;
+  aTexture.needsUpdate = true;
+
+  tTexture.repeat.x = 0.5;
+  tTexture.offset.x = 0.5;
+  tTexture.needsUpdate = true;
+
+  const mat0 = basicMat(iTexture[0]);
+  const mat1 = basicMat(iTexture[1]);
+  const mat2 = basicMat(iTexture[2]);
+  const mat3 = basicMat(iTexture[3]);
+  const mat4 = basicMat(iTexture[4]);
+  const mat5 = basicMat(iTexture[5]);
+  const mat6 = basicMat(iTexture[6]);
+  const mat7 = basicMat(iTexture[7]);
+  const mat8 = basicMat(iTexture[8]);
+
+  // var offset = 0;
+
+  // addPlane(-60, 60, 100, 100, mat0);
+  // addPlane(60, 60, 100, 100, mat1);
+  // addPlane(-60, -60, 100, 100, mat2);
+  // addPlane(60, -60, 100, 100, mat3);
+
+  // offset += 100;
+  // addPlane(-offset + -60, offset + 60, 100, 100, mat4);
+  // addPlane(offset + 60, offset + 60, 100, 100, mat5);
+  // addPlane(-offset + -60, -offset + -60, 100, 100, mat6);
+  // addPlane(offset + 60, -offset + -60, 100, 100, mat7);
+
+  // offset += 100;
+  // addPlane(-offset + -60, offset + 60, 100, 100, mat8);
+
+  const pm = basicMat(data.textures.pmTexture);
+  // const pmText1 = data.textures.pmTexture.clone();
+  // const pmText2 = data.textures.pmTexture.clone();
+
+  // pmText2.repeat.x = 1;
+  // pmText2.repeat.y = 0.1;
+  // pmText2.offset.y = 0.9;
+
+  // pmText1.needsUpdate = true;
+  // pmText2.needsUpdate = true;
+
+  // const pm1 = basicMat(pmText1);
+  // const pm2 = basicMat(pmText2);
+
+
+
+  addPlane(310, 60, 600, 600, pm);
+  addPlane(-310, 60, 600, 600, pm, true);
+  addPlane(-310, 60, 1000, 200, pm, true);
+  // addPlane(-60, -410, 1000, 300, pm1);
+  // addPlane(-60, -100, 1000, 300, pm2);
 
   // const text = data.fonts.montserrat;
   // text.position.set(-text.geometry.layout.width / 2,
@@ -403,13 +551,13 @@ function addBunchOfText(data, container) {
   // text.scale.set(2, -2, 1);
   // plane.add(text);
 
-  var glass = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
-    new THREE.MeshBasicMaterial({
-      color: 0xaa00cc
-    }));
-  glass.position.set(0, 0, 0);
-  plane.add(glass);
+  // var glass = new THREE.Mesh(
+  //   new THREE.PlaneGeometry(10, 10),
+  //   new THREE.MeshBasicMaterial({
+  //     color: 0xaa00cc
+  //   }));
+  // glass.position.set(0, 0, 0);
+  // plane.add(glass);
 }
 
 function initContainer(data) {

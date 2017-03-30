@@ -35,6 +35,12 @@ function Assets(data, onLoad) {
 
   loader.font('robotocolor', '/assets/fonts/robotoblue.fnt');
 
+  loader.atlas('boxpack', '/assets/images/boxpack');
+
+  loader.texture('boxpackt', '/assets/images/boxpack.png');
+
+  loader.texture('pmt', '/assets/images/pm.png');
+
   loader.start(() => {
 
     data.geometries = new Geometries(data);
