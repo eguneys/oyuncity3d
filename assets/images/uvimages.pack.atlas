@@ -1,0 +1,34 @@
+
+uvimages.pack.png
+size: 2048,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+uvgrid-0-0
+  rotate: false
+  xy: 2, 2
+  size: 510, 510
+  orig: 510, 510
+  offset: 0, 0
+  index: -1
+uvgrid-0-1
+  rotate: false
+  xy: 2, 514
+  size: 510, 514
+  orig: 510, 514
+  offset: 0, 0
+  index: -1
+uvgrid-1-0
+  rotate: false
+  xy: 518, 1034
+  size: 514, 510
+  orig: 514, 510
+  offset: 0, 0
+  index: -1
+uvgrid-1-1
+  rotate: false
+  xy: 2, 1030
+  size: 514, 514
+  orig: 514, 514
+  offset: 0, 0
+  index: -1

@@ -9,6 +9,9 @@ function Textures(data) {
 
   this.pmTexture = loader.get('pmt');
 
+  this.uvgridTexture = loader.get('uvgrid');
+  this.uvgridAtlas = loader.get('uvgridatlas');
+
   this.avatarTexture = loader.get('ftexture');
 
   this.makeTextureGradient = (color1, color2, alpha1 = 1, alpha2 = 1) => {

@@ -36,10 +36,13 @@ function Assets(data, onLoad) {
   loader.font('robotocolor', '/assets/fonts/robotoblue.fnt');
 
   loader.atlas('boxpack', '/assets/images/boxpack');
-
+  
   loader.texture('boxpackt', '/assets/images/boxpack.png');
 
   loader.texture('pmt', '/assets/images/pm.png');
+  loader.texture('uvgrid', '/assets/images/uvgrid.jpg');
+
+  loader.atlas('uvgridatlas', '/assets/images/uvimages.pack');
 
   loader.start(() => {
 

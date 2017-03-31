@@ -107,7 +107,7 @@ function loadAtlas(url, onLoad) {
   loadFile(atlasUrl, function(json) {
     json = JSON.parse(json);
     textureLoader.load(pngUrl, function(texture) {
-      const texs = [];
+      const texs = {};
 
       for (var key in json.frames) {
         var tex = texture.clone();
@@ -117,12 +117,10 @@ function loadAtlas(url, onLoad) {
         tex.repeat.x = (frame.w / texture.image.width);
         tex.repeat.y = (frame.h / texture.image.height);
         tex.offset.x = (Math.abs(frame.x) / texture.image.width);
-        tex.offset.y = (Math.abs(frame.y) / texture.image.height);
-
+        tex.offset.y = 1 - (Math.abs(frame.y + frame.h) / texture.image.height);
+        // console.log(key, tex.offset.y, frame.y, frame.h);
         tex.needsUpdate = true;
-
-        // tex.repeat.x = 0.5;
-        texs.push(tex);
+        texs[key] = tex;
       }
       onLoad(texs);
     });

@@ -390,15 +390,42 @@ function addBunchOfText(data, container) {
 
   function basicMat(tex) {
     return new THREE.MeshBasicMaterial({
-      map: tex
+      map: tex,
+      transparent: true
       // color: 0xffff00
+    });
+  }
+
+  function colorMat(tex) {
+    return new THREE.MeshBasicMaterial({
+      vertexColors: THREE.VertexColors
     });
   }
 
   // http://www.inear.se/2013/07/cube-slam-behind-the-three-scene/
   function addPlane(x, y, w, h, mat, manipulate) {
-    // const geometry = new THREE.PlaneGeometry(w, h, 3, 3);
-    const geometry = new NinePlaneGeometry(w, h);
+    var geometry = new THREE.PlaneGeometry(w, h, 3, 3);
+
+    if (true) {
+      const faceIndices = ['a', 'b', 'c', 'd'];
+
+      for ( var i = 0; i < geometry.faces.length; i++ )
+      {
+        face  = geometry.faces[ i ];
+
+        // determine if current face is a tri or a quad
+        const numberOfSides = 3;
+        // assign color to each vertex of current face
+        for( var j = 0; j < numberOfSides; j++ )
+        {
+          const vertexIndex = face[ faceIndices[ j ] ];
+          // initialize color variable
+          const color = new THREE.Color( 0xffffff );
+          color.setHex( Math.random() * 0xffffff );
+          face.vertexColors[ j ] = color;
+        }
+      }
+    }
 
     if (manipulate) {
       /*
@@ -446,10 +473,107 @@ function addBunchOfText(data, container) {
       face[0].x = 0.9;
       face[0].y = 0.9;
       face[1].y = 0.9;
+
+      face = uvs[6];
+      // 0 .6  / 0 .3 / .3 .6
+      face[0].y = 0.9;
+      face[1].y = 0.1;
+      face[2].x = 0.1;
+      face[2].y = 0.9;
+
+      face = uvs[7];
+      // 0 .3  / .3 .3 / .3 .6
+
+      face[0].y = 0.1;
+      face[1].x = 0.1;
+      face[1].y = 0.1;
+      face[2].x = 0.1;
+      face[2].y = 0.9;
+      face = uvs[8];
+      // .3 .6  / .3 .3 / .6 .6
+      face[0].x = 0.1;
+      face[0].y = 0.9;
+      face[1].x = 0.1;
+      face[1].y = 0.1;
+      face[2].x = 0.9;
+      face[2].y = 0.9;
+      face = uvs[9];
+      // .3 .3  / .6 .3 / .6 .6
+      face[0].x = 0.1;
+      face[0].y = 0.1;
+      face[1].x = 0.9;
+      face[1].y = 0.1;
+      face[2].x = 0.9;
+      face[2].y = 0.9;
+      face = uvs[10];
+      // .6 .6  / .6 .3 / 1 .6
+      face[0].x = 0.9;
+      face[0].y = 0.9;
+      face[1].x = 0.9;
+      face[1].y = 0.1;
+      face[2].x = 1;
+      face[2].y = 0.9;
+      face = uvs[11];
+      // .6 .3 / 1 .3 / 1 .6
+      face[0].x = 0.9;
+      face[0].y = 0.1;
+      face[1].x = 1;
+      face[1].y = 0.1;
+      face[2].x = 1;
+      face[2].y = 0.9;
+      face = uvs[12];
+      // 0 .3 / 0 0 / .3 .3
+      face[0].x = 0;
+      face[0].y = 0.1;
+      face[1].x = 0;
+      face[1].y = 0;
+      face[2].x = 0.1;
+      face[2].y = 0.1;
+      face = uvs[13];
+      // 0 0 / .3 0 / .3 .3
+      face[0].x = 0;
+      face[0].y = 0;
+      face[1].x = 0.1;
+      face[1].y = 0;
+      face[2].x = 0.1;
+      face[2].y = 0.1;
+      face = uvs[14];
+      // .3 .3 / .3 0 / .6 .3
+      face[0].x = 0.1;
+      face[0].y = 0.1;
+      face[1].x = 0.1;
+      face[1].y = 0;
+      face[2].x = 0.9;
+      face[2].y = 0.1;
+      face = uvs[15];
+      // .3 0 / .6 0 / .6 .3
+      face[0].x = 0.1;
+      face[0].y = 0;
+      face[1].x = 0.9;
+      face[1].y = 0;
+      face[2].x = 0.9;
+      face[2].y = 0.1;
+      face = uvs[16];
+      // .6 .3 / .6 0 / 1 .3
+      face[0].x = 0.9;
+      face[0].y = 0.1;
+      face[1].x = 0.9;
+      face[1].y = 0;
+      face[2].x = 1;
+      face[2].y = 0.1;
+      face = uvs[17];
+      // console.log(face.map(v => `${v.x}, ${v.y}`).join('\n'));
+      // .6 0 / 1 0 / 1 .3
+      face[0].x = 0.9;
+      face[0].y = 0;
+      face[1].x = 1;
+      face[1].y = 0;
+      face[2].x = 1;
+      face[2].y = 0.1;
       geometry.uvsNeedUpdate = true;
 
-      const cornerDistW = (w - 100)/2;
-      const cornerDistH = (h - 100)/2;
+      const cornerDistW = (w - 150)/2;
+      const cornerDistH = (h - 150)/2;
 
       var verts = geometry.vertices;
 
@@ -495,35 +619,51 @@ function addBunchOfText(data, container) {
   tTexture.offset.x = 0.5;
   tTexture.needsUpdate = true;
 
-  const mat0 = basicMat(iTexture[0]);
-  const mat1 = basicMat(iTexture[1]);
-  const mat2 = basicMat(iTexture[2]);
-  const mat3 = basicMat(iTexture[3]);
-  const mat4 = basicMat(iTexture[4]);
-  const mat5 = basicMat(iTexture[5]);
-  const mat6 = basicMat(iTexture[6]);
-  const mat7 = basicMat(iTexture[7]);
-  const mat8 = basicMat(iTexture[8]);
+  const mat0 = basicMat(iTexture['oyuncitybox11']);
+  const mat1 = basicMat(iTexture['oyuncitybox8']);
+  const mat2 = basicMat(iTexture['oyuncitybox5']);
+  const mat3 = basicMat(iTexture['oyuncitybox12']);
+  const mat4 = basicMat(iTexture['oyuncitybox11']);
+  const mat5 = basicMat(iTexture['oyuncitybox11']);
+  const mat6 = basicMat(iTexture['oyuncitybox11']);
+  const mat7 = basicMat(iTexture['oyuncitybox11']);
+  const mat8 = basicMat(iTexture['oyuncitybox11']);
 
-  // var offset = 0;
+  const uvGridAtlas = data.textures.uvgridAtlas;
+  const uvMat0 = basicMat(uvGridAtlas[0]);
+  const uvMat1 = basicMat(uvGridAtlas[1]);
+  const uvMat2 = basicMat(uvGridAtlas[2]);
+  const uvMat3 = basicMat(uvGridAtlas[3]);
 
-  // addPlane(-60, 60, 100, 100, mat0);
-  // addPlane(60, 60, 100, 100, mat1);
-  // addPlane(-60, -60, 100, 100, mat2);
-  // addPlane(60, -60, 100, 100, mat3);
+  var offset = 0;
 
-  // offset += 100;
-  // addPlane(-offset + -60, offset + 60, 100, 100, mat4);
-  // addPlane(offset + 60, offset + 60, 100, 100, mat5);
-  // addPlane(-offset + -60, -offset + -60, 100, 100, mat6);
-  // addPlane(offset + 60, -offset + -60, 100, 100, mat7);
+  addPlane(-60, 60, 100, 100, mat0);
+  addPlane(60, 60, 100, 100, mat1);
+  addPlane(-60, -60, 100, 100, mat2);
+  addPlane(60, -60, 100, 100, mat3);
 
-  // offset += 100;
-  // addPlane(-offset + -60, offset + 60, 100, 100, mat8);
+  offset += 100;
+  addPlane(-offset + -60, offset + 60, 100, 100, mat4);
+  addPlane(offset + 60, offset + 60, 100, 100, mat5);
+  addPlane(-offset + -60, -offset + -60, 100, 100, mat6);
+  addPlane(offset + 60, -offset + -60, 100, 100, mat7);
 
-  const pm = basicMat(data.textures.pmTexture);
+  offset += 100;
+  addPlane(-offset + -60, offset + 60, 100, 100, mat8);
+
+  const pm = colorMat(data.textures.pmTexture);
+  const pmb = basicMat(data.textures.pmTexture);
   // const pmText1 = data.textures.pmTexture.clone();
   // const pmText2 = data.textures.pmTexture.clone();
+
+  const uvGridTexture = data.textures.uvgridTexture.clone();
+  uvGridTexture.repeat.x = 0.1;
+  uvGridTexture.repeat.y = 0.1;
+  uvGridTexture.offset.x = 0.9;
+  uvGridTexture.offset.y = 0.9;
+  uvGridTexture.needsUpdate = true;
+
+  const uvgrid = basicMat(uvGridTexture);
 
   // pmText2.repeat.x = 1;
   // pmText2.repeat.y = 0.1;
@@ -537,9 +677,9 @@ function addBunchOfText(data, container) {
 
 
 
-  addPlane(310, 60, 600, 600, pm);
-  addPlane(-310, 60, 600, 600, pm, true);
-  addPlane(-310, 60, 1000, 200, pm, true);
+  // addPlane(310, 60, 600, 600, pm);
+  // addPlane(-310, 60, 600, 600, pm, true);
+  // addPlane(-310, 60, 500, 500, pmb);
   // addPlane(-60, -410, 1000, 300, pm1);
   // addPlane(-60, -100, 1000, 300, pm2);
 
@@ -553,7 +693,7 @@ function addBunchOfText(data, container) {
 
   // var glass = new THREE.Mesh(
   //   new THREE.PlaneGeometry(10, 10),
-  //   new THREE.MeshBasicMaterial({
+  //   new THREE.MeshBasicMaeterial({
   //     color: 0xaa00cc
   //   }));
   // glass.position.set(0, 0, 0);

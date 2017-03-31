@@ -25,10 +25,10 @@ function readToJson(filename, onRead) {
       var indexmatch = lindex.match(/:[^\d](\d*)/);
 
       var rotated = rotatedmatch === 'f';
-      var x = xymatch[1];
-      var y = xymatch[2];
-      var w = sizematch[1];
-      var h = sizematch[2];
+      var x = Number(xymatch[1]);
+      var y = Number(xymatch[2]);
+      var w = Number(sizematch[1]);
+      var h = Number(sizematch[2]);
       var index = indexmatch[1];
 
       frames[lframeName + index] = {

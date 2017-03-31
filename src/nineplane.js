@@ -75,13 +75,33 @@ function NinePlaneBufferGeometry( width, height, widthSegments, heightSegments )
 
   // generate vertices, normals and uvs
 
+  const offset = 50;
+
   for ( iy = 0; iy < gridY1; iy ++ ) {
 
     var y = iy * segment_height - height_half;
+    if (iy === 1) {
+      y = offset -height_half;
+    }
+
+    if (iy === gridY - 1) {
+      y = (iy + 1) * segment_height - height_half;
+      y -= offset;
+    }
+
 
     for ( ix = 0; ix < gridX1; ix ++ ) {
 
       var x = ix * segment_width - width_half;
+
+      if (ix === 1) {
+        x = offset -width_half;
+      }
+      if (ix === gridX - 1) {
+        x = (ix + 1) * segment_width - width_half;
+        x -= offset;
+      }
+
 
       vertices.push( x, - y, 0 );
 
@@ -90,6 +110,8 @@ function NinePlaneBufferGeometry( width, height, widthSegments, heightSegments )
       uvs.push( ix / gridX );
       uvs.push( 1 - ( iy / gridY ) );
 
+      // uvs.push((x + width_half) / width);
+      // uvs.push( 1 - ((y + height_half) / height));
     }
 
   }
