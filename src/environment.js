@@ -28,6 +28,18 @@ const blockColorMap = {
 const boardWidth = 200;
 const stepDepth = 5;
 
+const nbSteps = 11;
+const nbInSteps = nbSteps - 4;
+const blockPadding = 1;
+const boardPadding = 1;
+const halfStepWidth = (boardWidth
+                       - boardPadding * 2
+                       - blockPadding * (nbSteps - 3)
+                      ) / nbSteps;
+const stepWidth = halfStepWidth * 2;
+const halfBoardWidth = boardWidth / 2;
+const stepIncrementWidth = halfStepWidth * 1.5;
+
 function Environment(data) {
   this.arena = initArena(data);
 
@@ -40,10 +52,67 @@ function Environment(data) {
 
   const board = addBoard(data, this.arena);
 
-  requestAnimationFrame(function loo() {
+  const blockExtrude = addBlockExtrude(data, board,
+                                       -boardWidth/2
+                                       + halfStepWidth
+                                       + boardPadding,
+                                       - boardWidth/2
+                                       + halfStepWidth * 7.5
+                                       + blockPadding * 6
+                                       + boardPadding,
+                                       // + halfStepWidth * 7.5
+                                       // + blockPadding * 5,
+                                       stepWidth
+                                       + blockPadding,
+                                       halfStepWidth * 3
+                                       + blockPadding * 3
+                                       + blockPadding);
+
+  requestAnimationFrame(function loo(t) {
     // board.rotation.z+= 1 / 60 / 10;
+    blockExtrude.position.z = stepDepth * 2 + 10 * Math.sin(-t/60 / 10);
     requestAnimationFrame(loo);
   });
+}
+
+function addBlockExtrude(data, board, x, y, width, height) {
+  const extrudeSettings = {
+    bevelEnabled: true,
+    bevelSize: 0.2,
+    bevelThickness: stepDepth / 2,
+    steps: 2,
+    bevelSegments: 2,
+    amount: 1
+  };
+
+  const radius = 2;
+  const offset = 1;
+
+  const shape = data.geometries.makeRoundShapeOnly(width,
+                                                   height, radius);
+
+  const holeShape = data.geometries.makeRoundShapeOnly(width - offset,
+                                                       height - offset, radius);
+
+  shape.holes.push(holeShape);
+
+  const material = new THREE.MeshPhongMaterial({
+    color: 0xcccccc
+  });
+  
+  const geometry = new THREE.ExtrudeGeometry(shape,
+                                                  extrudeSettings);
+
+  const mesh = new THREE.Mesh(geometry, material);
+
+  mesh.position.set(x,
+                    y,
+                    stepDepth* 1.2);
+  
+  board.add(mesh);
+
+  return mesh;
+  
 }
 
 function addBoard(data, arena) {
@@ -63,7 +132,7 @@ function addBoard(data, arena) {
   // boardMesh.rotation.z = degToRad(90);
   // boardMesh.rotation.x = degToRad(-80);
   // boardMesh.position.x = 100;
-
+  // boardMesh.position.z = 200;
   arena.add(boardMesh);
 
   addPlayer(boardMesh);
@@ -93,18 +162,6 @@ function addSteps(data, board) {
 
     return mesh;
   }
-
-  const nbSteps = 11;
-  const nbInSteps = nbSteps - 4;
-  const blockPadding = 1;
-  const boardPadding = 1;
-  const halfStepWidth = (boardWidth
-                         - boardPadding * 2
-                         - blockPadding * (nbSteps - 3)
-                        ) / nbSteps;
-  const stepWidth = halfStepWidth * 2;
-  const halfBoardWidth = boardWidth / 2;
-  const stepIncrementWidth = halfStepWidth * 1.5;
 
   var blockIndex = 0;
   var blockColor;
@@ -234,9 +291,8 @@ function addSkyBox(arena) {
 }
 
 function addLight(arena) {
-  const light = new THREE.DirectionalLight(0xffffff);
-  light.intensity = 1.5;
-  light.position.set(0, 0, 100);
+  const light = new THREE.DirectionalLight(0xffffff, 1.8);
+  light.position.set(0, 0, 160);
   arena.add(light);
 }
 

@@ -2,6 +2,28 @@ import * as THREE from 'three';
 
 function Geometries() {
 
+  this.makeRoundShapeOnly = (width, height, radius) => {
+    const shape = new THREE.Shape();
+
+    const left =-width / 2;
+    const top = height / 2;
+    const right = width / 2;
+    const bottom = - height / 2;
+
+
+    shape.moveTo(left, top - radius);
+    shape.lineTo(left, bottom + radius);
+    shape.quadraticCurveTo(left, bottom, left + radius, bottom);
+    shape.lineTo(right - radius, bottom);
+    shape.quadraticCurveTo(right, bottom, right, bottom + radius);
+    shape.lineTo(right, top - radius);
+    shape.quadraticCurveTo(right, top, right - radius, top);
+    shape.lineTo(left + radius, top);
+    shape.quadraticCurveTo(left, top, left, top - radius);
+
+    return shape;
+  };
+
   // apply texture
   // http://stackoverflow.com/questions/19182298/how-to-texture-a-three-js-mesh-created-with-shapegeometry
 
