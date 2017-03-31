@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { CameraController } from './camera';
 import { Environment } from './environment';
 import { Hud } from './hud';
+import { World } from './world';
 import { Assets } from './assets';
 import { Loop } from './loop';
 
@@ -37,6 +38,8 @@ function initThree(data) {
     data.container = initContainer(data.scene);
     data.cameraController = new CameraController(data.width, data.height);
     data.renderer = initRenderer(data.canvas);
+
+    data.world = new World(data);
 
     data.environment = new Environment(data);
     data.hud = new Hud(data);

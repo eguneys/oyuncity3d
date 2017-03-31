@@ -4,12 +4,26 @@ import { degToRad } from './util';
 // http://materialuicolors.co/
 const blockMatYellow500 = 0xFFEB3B;
 const blockMatGrey500 = 0x9E9E9E;
+const blockMatLime500 = 0xCDDC39;
 const blockMatGreen500 = 0x8BC34A;
 const blockMatCyan500 = 0x00BCD4;
 const blockMatOrange500 = 0xFF9800;
 const blockMatPurple500 = 0x9C27B0;
 const blockMatBlue500 = 0x2196F3;
 const blockMatRed500 = 0xF44336;
+
+const blockColorMap = {
+  white: 0xffffff,
+  yellow: blockMatYellow500,
+  gray: blockMatGrey500,
+  lime: blockMatLime500,
+  green: blockMatGreen500,
+  cyan: blockMatCyan500,
+  orange: blockMatOrange500,
+  purple: blockMatPurple500,
+  blue: blockMatBlue500,
+  red: blockMatRed500
+};
 
 const boardWidth = 200;
 const stepDepth = 5;
@@ -24,7 +38,7 @@ function Environment(data) {
 
   addSkyBox(this.arena);
 
-  const board = addBoard(this.arena);
+  const board = addBoard(data, this.arena);
 
   requestAnimationFrame(function loo() {
     // board.rotation.z+= 1 / 60 / 10;
@@ -32,7 +46,7 @@ function Environment(data) {
   });
 }
 
-function addBoard(arena) {
+function addBoard(data, arena) {
 
   const boardMaterial = new THREE.MeshBasicMaterial({
     color: 0xcccccc
@@ -44,7 +58,7 @@ function addBoard(arena) {
 
   boardMesh.rotation.z = degToRad(45);
   boardMesh.rotation.x = degToRad(-60);
-  boardMesh.position.y = 10;
+  // boardMesh.position.y = 10;
   // debug
   // boardMesh.rotation.z = degToRad(90);
   // boardMesh.rotation.x = degToRad(-80);
@@ -54,14 +68,23 @@ function addBoard(arena) {
 
   addPlayer(boardMesh);
 
-  addSteps(boardMesh);
+  addSteps(data, boardMesh);
 
   return boardMesh;
 }
 
-function addSteps(board) {
+function addSteps(data, board) {
+  const blocks = data.blocks;
 
-  function makeStepMesh(width, height, color = 0xaa0000) {
+  function getBlockColorOrDefault(blockIndex) {
+    const defaultColor = 0x111111;
+
+    return (blocks[blockIndex] ? blockColorMap[blocks[blockIndex].color]
+            || defaultColor :
+            defaultColor);
+  }
+
+  function makeStepMesh(width, height, color = 0xffffff) {
     const mesh = new THREE.Mesh(
       new THREE.BoxGeometry(width, height, stepDepth),
       new THREE.MeshPhongMaterial({
@@ -73,11 +96,18 @@ function addSteps(board) {
 
   const nbSteps = 11;
   const nbInSteps = nbSteps - 4;
+  const blockPadding = 1;
   const boardPadding = 1;
-  const halfStepWidth = (boardWidth - boardPadding * 2) / nbSteps;
+  const halfStepWidth = (boardWidth
+                         - boardPadding * 2
+                         - blockPadding * (nbSteps - 3)
+                        ) / nbSteps;
   const stepWidth = halfStepWidth * 2;
   const halfBoardWidth = boardWidth / 2;
   const stepIncrementWidth = halfStepWidth * 1.5;
+
+  var blockIndex = 0;
+  var blockColor;
 
   var step0 = makeStepMesh(stepWidth, stepWidth);
 
@@ -90,27 +120,33 @@ function addSteps(board) {
       yIncrement = stepIncrementWidth,
       xIncrement = stepIncrementWidth;
   for (var i = 0; i < nbInSteps; i++) {
-    step1 = makeStepMesh(stepWidth, halfStepWidth, 0x00aa00 * i);
+    blockIndex++;
+    blockColor = getBlockColorOrDefault(blockIndex);
+    step1 = makeStepMesh(stepWidth, halfStepWidth, blockColor);
     step1.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
                        -halfBoardWidth + halfStepWidth + boardPadding
-                       + yIncrement,
+                       + yIncrement
+                       + blockPadding * (i + 1),
                        stepDepth);
     board.add(step1);
 
     yIncrement += halfStepWidth;
   }
 
+  blockIndex = 8;
   var step2 = makeStepMesh(stepWidth, stepWidth);
 
   step2.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
                      halfBoardWidth - halfStepWidth - boardPadding,
                     stepDepth);
   board.add(step2);
-
   for (i = 0; i < nbInSteps; i++) {
-    step1 = makeStepMesh(halfStepWidth, stepWidth, 0xaa0000 * i);
+    blockIndex++;
+    blockColor = getBlockColorOrDefault(blockIndex);
+    step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
     step1.position.set(-halfBoardWidth + halfStepWidth + boardPadding
-                       + xIncrement,
+                       + xIncrement
+                       + blockPadding * (i + 1),
                        halfBoardWidth - halfStepWidth - boardPadding,
                        stepDepth);
     board.add(step1);
@@ -118,6 +154,7 @@ function addSteps(board) {
     xIncrement += halfStepWidth;
   }
 
+  blockIndex = 16;
   var step4 = makeStepMesh(stepWidth, stepWidth);
 
   step4.position.set(halfBoardWidth - halfStepWidth - boardPadding,
@@ -127,16 +164,21 @@ function addSteps(board) {
 
   yIncrement = - halfStepWidth * 1.5;
   for (i = 0; i < nbInSteps; i++) {
-    step1 = makeStepMesh(stepWidth, halfStepWidth, 0x0000aa * i);
+    blockIndex++;
+    blockColor = getBlockColorOrDefault(blockIndex);
+    step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
+    step1 = makeStepMesh(stepWidth, halfStepWidth, blockColor);
     step1.position.set(halfBoardWidth - halfStepWidth - boardPadding,
                        halfBoardWidth - halfStepWidth - boardPadding
-                       + yIncrement,
+                       + yIncrement
+                       - blockPadding * (i + 1),
                        stepDepth);
     board.add(step1);
 
     yIncrement -= halfStepWidth;
   }
 
+  blockIndex = 24;
   var step6 = makeStepMesh(stepWidth, stepWidth);
 
   step6.position.set(halfBoardWidth - halfStepWidth - boardPadding,
@@ -146,9 +188,12 @@ function addSteps(board) {
 
   xIncrement = - halfStepWidth * 1.5;
   for (i = 0; i < nbInSteps; i++) {
-    step1 = makeStepMesh(halfStepWidth, stepWidth, 0xaa00aa * i);
+    blockIndex++;
+    blockColor = getBlockColorOrDefault(blockIndex);
+    step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
     step1.position.set(halfBoardWidth - halfStepWidth - boardPadding
-                       + xIncrement,
+                       + xIncrement
+                       - blockPadding * (i + 1),
                        - halfBoardWidth + halfStepWidth + boardPadding,
                        stepDepth);
     board.add(step1);
@@ -189,8 +234,9 @@ function addSkyBox(arena) {
 }
 
 function addLight(arena) {
-  const light = new THREE.PointLight(0xffffff);
-  light.position.set(0, 0, 300);
+  const light = new THREE.DirectionalLight(0xffffff);
+  light.intensity = 1.5;
+  light.position.set(0, 0, 100);
   arena.add(light);
 }
 
