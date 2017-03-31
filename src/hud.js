@@ -9,7 +9,7 @@ function Hud(data) {
 
   this.container = initContainer(data);
 
-  addBunchOfText(data, this.container);
+  // addBunchOfText(data, this.container);
 
   this.vm.nodePlayers['topleft'] =
     addPlayerText(data, this.container, 'topleft', '1');

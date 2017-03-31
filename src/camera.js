@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 function CameraController(w, h) {
-  const fov = 60,
+  const fov = 16,
         aspect = w / h,
         zNear = 1,
         zFar = 2000;
@@ -19,7 +19,7 @@ function CameraController(w, h) {
   this.basePosition = new THREE.Vector3(
     0,
     0,
-    160
+    800
   );
 
   this.target = new THREE.Vector3(
