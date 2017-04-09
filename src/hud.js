@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-
-import { NinePlaneGeometry } from './nineplane';
+import * as colors from './colors';
 
 function Hud(data) {
   this.vm = {
@@ -153,18 +152,6 @@ function addPlayerText(data, container, orientation, rankText) {
 
   const rankColor = rankColorMap[rankText];
 
-  const matBlue700 = 0x1976D2;
-  const matLightBlue400 = 0x29B6F6;
-  const matGreen700 = 0x388E3C;
-  const matLightGreen400 = 0x9CCC65;
-  const matLightGreen700 = 0x689F38;
-
-  const matYellow400 = 0xFFEE58;
-  const matAmber700 = 0xFFA000;
-
-  const matDeep400 = 0xFF7043;
-  const matRed700 = 0xd32f2f;
-
   const optionsMap = {
     'topleft': {
       x: - data.width + width / 2 + offset,
@@ -183,8 +170,8 @@ function addPlayerText(data, container, orientation, rankText) {
       titleCorners: {
         rightTop: true
       },
-      titleColor1: matLightBlue400,
-      titleColor2: matBlue700,
+      titleColor1: colors.matLightBlue400,
+      titleColor2: colors.matBlue700,
       bgAlpha1: 1,
       bgAlpha2: 0.6
     },
@@ -205,8 +192,8 @@ function addPlayerText(data, container, orientation, rankText) {
       titleCorners: {
         leftTop: true
       },
-      titleColor1: matLightGreen400,
-      titleColor2: matGreen700,
+      titleColor1: colors.matLightGreen400,
+      titleColor2: colors.matGreen700,
       bgAlpha1: 1,
       bgAlpha2: 0.6
     },
@@ -227,8 +214,8 @@ function addPlayerText(data, container, orientation, rankText) {
       titleCorners: {
         leftBottom: true
       },
-      titleColor1: matAmber700,
-      titleColor2: matYellow400,
+      titleColor1: colors.matAmber700,
+      titleColor2: colors.matYellow400,
       bgAlpha1: 0.6,
       bgAlpha2: 1
     },
@@ -249,8 +236,8 @@ function addPlayerText(data, container, orientation, rankText) {
       titleCorners: {
         rightBottom: true
       },
-      titleColor1: matRed700,
-      titleColor2: matDeep400,
+      titleColor1: colors.matRed700,
+      titleColor2: colors.matDeep400,
       bgAlpha1: 0.6,
       bgAlpha2: 1
     }

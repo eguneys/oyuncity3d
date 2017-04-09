@@ -1,28 +1,19 @@
 import * as THREE from 'three';
 import { degToRad } from './util';
 
-// http://materialuicolors.co/
-const blockMatYellow500 = 0xFFEB3B;
-const blockMatGrey500 = 0x9E9E9E;
-const blockMatLime500 = 0xCDDC39;
-const blockMatGreen500 = 0x8BC34A;
-const blockMatCyan500 = 0x00BCD4;
-const blockMatOrange500 = 0xFF9800;
-const blockMatPurple500 = 0x9C27B0;
-const blockMatBlue500 = 0x2196F3;
-const blockMatRed500 = 0xF44336;
+import * as colors from './colors';
 
 const blockColorMap = {
   white: 0xffffff,
-  yellow: blockMatYellow500,
-  gray: blockMatGrey500,
-  lime: blockMatLime500,
-  green: blockMatGreen500,
-  cyan: blockMatCyan500,
-  orange: blockMatOrange500,
-  purple: blockMatPurple500,
-  blue: blockMatBlue500,
-  red: blockMatRed500
+  yellow: colors.matYellow500,
+  gray: colors.matGrey500,
+  lime: colors.matLime500,
+  green: colors.matGreen500,
+  cyan: colors.matCyan500,
+  orange: colors.matOrange500,
+  purple: colors.matPurple500,
+  blue: colors.matBlue500,
+  red: colors.matRed500
 };
 
 const boardWidth = 200;
@@ -283,7 +274,10 @@ function Environment(data) {
   //                                      + blockPadding);
 
 
-  const blockExtrude = addBlockExtrudeColor(data, board, 'yellow');
+  const blockExtrude = addBlockExtrudeColor(data, board, 'yellow', colors.matAmber700);
+  addBlockExtrudeColor(data, board, 'blue', colors.matRed700);
+  addBlockExtrudeColor(data, board, 'orange', colors.matGreen700);
+  addBlockExtrudeColor(data, board, 'red', colors.matBlue700);
 
   requestAnimationFrame(function loo(t) {
     // board.rotation.z+= 1 / 60 / 10;
@@ -292,13 +286,13 @@ function Environment(data) {
   });
 }
 
-function addBlockExtrudeColor(data, board, color) {
+function addBlockExtrudeColor(data, board, color, blockColor) {
   const { x, y, w, h } = blockExtrudeMeasures[color];
 
-  return addBlockExtrude(data, board, x, y, w, h);
+  return addBlockExtrude(data, board, x, y, w, h, blockColor);
 }
 
-function addBlockExtrude(data, board, x, y, width, height) {
+function addBlockExtrude(data, board, x, y, width, height, color = 0xcccccc) {
   const extrudeSettings = {
     bevelEnabled: true,
     bevelSize: 0.2,
@@ -320,7 +314,7 @@ function addBlockExtrude(data, board, x, y, width, height) {
   shape.holes.push(holeShape);
 
   const material = new THREE.MeshPhongMaterial({
-    color: 0xcccccc
+    color: color
   });
   
   const geometry = new THREE.ExtrudeGeometry(shape,
@@ -330,7 +324,7 @@ function addBlockExtrude(data, board, x, y, width, height) {
 
   mesh.position.set(x,
                     y,
-                    stepDepth* 1.2);
+                    stepDepth* 1.1);
   
   board.add(mesh);
 
