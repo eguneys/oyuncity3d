@@ -40,6 +40,109 @@ const stepWidth = halfStepWidth * 2;
 const halfBoardWidth = boardWidth / 2;
 const stepIncrementWidth = halfStepWidth * 1.5;
 
+const blockExtrudeEdgeTopLeft =
+  +boardWidth/2
+  - halfStepWidth
+  - boardPadding;
+
+const blockExtrudeEdgeBottomRight =
+  -boardWidth / 2
+  + halfStepWidth
+  + boardPadding;
+
+const blockExtrudeWidth1 =
+  stepWidth
+  + blockPadding;
+
+const blockExtrudeWidth2 =
+  halfStepWidth * 2
+  + blockPadding * 2
+  + blockPadding;
+
+const blockExtrudeWidth3 =
+  halfStepWidth * 3
+  + blockPadding * 3
+  + blockPadding;
+
+const blockExtrudeMeasures = {
+  yellow: {
+    x: blockExtrudeEdgeBottomRight,
+    y: - boardWidth/2
+      + halfStepWidth * 3
+      + blockPadding * 1
+      + boardPadding,
+    w: blockExtrudeWidth1,
+    h: halfStepWidth * 2
+      + blockPadding * 2
+      + blockPadding
+  },
+  lime: {
+    x: blockExtrudeEdgeBottomRight,
+    y: -boardWidth / 2
+      + halfStepWidth * 7.5
+      + blockPadding * 6
+      + boardPadding,
+    w: blockExtrudeWidth1,
+    h: blockExtrudeWidth3
+  },
+  cyan: {
+    x: -boardWidth / 2
+      + halfStepWidth * 3
+      + blockPadding * 2
+      + boardPadding,
+    y: blockExtrudeEdgeTopLeft,
+    w: blockExtrudeWidth2,
+    h: blockExtrudeWidth1
+  },
+  green: {
+    x: -boardWidth / 2
+      + halfStepWidth * 7.5
+      + blockPadding * 6
+      + boardPadding,
+    y: blockExtrudeEdgeTopLeft,
+    w: blockExtrudeWidth3,
+    h: blockExtrudeWidth1
+  },
+  orange: {
+    x: blockExtrudeEdgeTopLeft,
+    y: -boardWidth/2
+      + halfStepWidth * 7.5
+      + blockPadding * 6
+      + boardPadding,
+    w: blockExtrudeWidth1,
+    h: blockExtrudeWidth3
+  },
+  purple: {
+    x: blockExtrudeEdgeTopLeft,
+    y: -boardWidth/2
+      + halfStepWidth * 3
+      + blockPadding * 2
+      + boardPadding,
+    w: blockExtrudeWidth1,
+    h: blockExtrudeWidth2
+  },
+  blue: {
+    x: boardWidth/2
+      - halfStepWidth * 3
+      - blockPadding * 2
+      - boardPadding,
+    y: blockExtrudeEdgeBottomRight,
+    w: blockExtrudeWidth2,
+    h: blockExtrudeWidth1
+  },
+  red: {
+    x: boardWidth / 2
+      - halfStepWidth * 7.5
+      - blockPadding * 6
+      - boardPadding,
+    y: blockExtrudeEdgeBottomRight,
+    w: blockExtrudeWidth3,
+    h: blockExtrudeWidth1      
+  }
+};
+
+
+
 function Environment(data) {
   this.arena = initArena(data);
 
@@ -52,27 +155,147 @@ function Environment(data) {
 
   const board = addBoard(data, this.arena);
 
-  const blockExtrude = addBlockExtrude(data, board,
-                                       -boardWidth/2
-                                       + halfStepWidth
-                                       + boardPadding,
-                                       - boardWidth/2
-                                       + halfStepWidth * 7.5
-                                       + blockPadding * 6
-                                       + boardPadding,
-                                       // + halfStepWidth * 7.5
-                                       // + blockPadding * 5,
-                                       stepWidth
-                                       + blockPadding,
-                                       halfStepWidth * 3
-                                       + blockPadding * 3
-                                       + blockPadding);
+  // const measures = blockExtrudeMeasures['red'];
+  // addBlockExtrude(data,
+  //                 board,
+  //                 measures.x,
+  //                 measures.y,
+  //                 measures.w,
+  //                 measures.h);
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      -boardWidth/2
+  //                                      + halfStepWidth
+  //                                      + boardPadding,
+  //                                      - boardWidth/2
+  //                                      + halfStepWidth * 7.5
+  //                                      + blockPadding * 6
+  //                                      + boardPadding,
+  //                                      // + halfStepWidth * 7.5
+  //                                      // + blockPadding * 5,
+  //                                      stepWidth
+  //                                      + blockPadding,
+  //                                      halfStepWidth * 3
+  //                                      + blockPadding * 3
+  //                                      + blockPadding);
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      -boardWidth/2
+  //                                      + halfStepWidth
+  //                                      + boardPadding,
+  //                                      - boardWidth/2
+  //                                      + halfStepWidth * 3
+  //                                      + blockPadding * 1
+  //                                      + boardPadding,
+  //                                      // + halfStepWidth * 7.5
+  //                                      // + blockPadding * 5,
+  //                                      stepWidth
+  //                                      + blockPadding,
+  //                                      halfStepWidth * 2
+  //                                      + blockPadding * 2
+  //                                      + blockPadding);
+
+
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      boardWidth/2
+  //                                      - halfStepWidth
+  //                                      - boardPadding,
+  //                                      - boardWidth/2
+  //                                      + halfStepWidth * 3
+  //                                      + blockPadding * 2
+  //                                      + boardPadding,
+  //                                      stepWidth
+  //                                      + blockPadding,
+  //                                      halfStepWidth * 2
+  //                                      + blockPadding * 2
+  //                                      + blockPadding);
+  
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      boardWidth/2
+  //                                      - halfStepWidth
+  //                                      - boardPadding,
+  //                                      - boardWidth/2
+  //                                      + halfStepWidth * 7.5
+  //                                      + blockPadding * 6
+  //                                      + boardPadding,
+  //                                      stepWidth
+  //                                      + blockPadding,
+  //                                      halfStepWidth * 3
+  //                                      + blockPadding * 3
+  //                                      + blockPadding);
+  
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      -boardWidth/2
+  //                                      + halfStepWidth * 3.5
+  //                                      + blockPadding * 2
+  //                                      + boardPadding,
+  //                                      - boardWidth/2
+  //                                      + halfStepWidth
+  //                                      + boardPadding,
+  //                                      halfStepWidth * 3
+  //                                      + blockPadding * 3
+  //                                      + blockPadding,
+  //                                      stepWidth
+  //                                      + blockPadding);
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      -boardWidth/2
+  //                                      + halfStepWidth * 8
+  //                                      + blockPadding * 7
+  //                                      + boardPadding,
+  //                                      - boardWidth/2
+  //                                      + halfStepWidth
+  //                                      + boardPadding,
+  //                                      halfStepWidth * 2
+  //                                      + blockPadding * 2
+  //                                      + blockPadding,
+  //                                      stepWidth
+  //                                      + blockPadding);
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      -boardWidth/2
+  //                                      + halfStepWidth * 7.5
+  //                                      + blockPadding * 6
+  //                                      + boardPadding,
+  //                                      + boardWidth/2
+  //                                      - halfStepWidth
+  //                                      - boardPadding,
+  //                                      halfStepWidth * 3
+  //                                      + blockPadding * 3
+  //                                      + blockPadding,
+  //                                      stepWidth
+  //                                      + blockPadding);
+
+  // const blockExtrude = addBlockExtrude(data, board,
+  //                                      -boardWidth/2
+  //                                      + halfStepWidth * 3
+  //                                      + blockPadding * 2
+  //                                      + boardPadding,
+  //                                      + boardWidth/2
+  //                                      - halfStepWidth
+  //                                      - boardPadding,
+  //                                      halfStepWidth * 2
+  //                                      + blockPadding * 2
+  //                                      + blockPadding,
+  //                                      stepWidth
+  //                                      + blockPadding);
+
+
+  const blockExtrude = addBlockExtrudeColor(data, board, 'yellow');
 
   requestAnimationFrame(function loo(t) {
     // board.rotation.z+= 1 / 60 / 10;
     blockExtrude.position.z = stepDepth * 2 + 10 * Math.sin(-t/60 / 10);
     requestAnimationFrame(loo);
   });
+}
+
+function addBlockExtrudeColor(data, board, color) {
+  const { x, y, w, h } = blockExtrudeMeasures[color];
+
+  return addBlockExtrude(data, board, x, y, w, h);
 }
 
 function addBlockExtrude(data, board, x, y, width, height) {
