@@ -41,6 +41,9 @@ function LoadManager() {
       case 'material': {
         loadFile(url, fComplete);
       } break;
+      case 'jsonm': {
+        loadJsonModel(url, fComplete);
+      } break;
       }
     }
   };
@@ -56,6 +59,7 @@ function LoadManager() {
   this.image = setCacheEntryWithType('image');
   this.texture = setCacheEntryWithType('texture');
   this.atlas = setCacheEntryWithType('atlas');
+  this.jsonModel = setCacheEntryWithType('jsonm');
     
 
   this.get = (key) => {
@@ -97,6 +101,17 @@ function loadTexture(url, onLoad, onError) {
                      function(xhr) {
                        throw xhr;
                      });
+}
+
+function loadJsonModel(url, onLoad, onError) {
+  objLoader.load(url, function(mesh) {
+    // const material = new THREE.MultiMaterial(materials);
+    // const mesh = new THREE.Mesh(geometry, material);
+    onLoad(mesh);
+  }, function () {},
+                  function(xhr) {
+                    throw xhr;
+                  });
 }
 
 function loadAtlas(url, onLoad) {
@@ -151,6 +166,8 @@ function loadImage(url, onLoad) {
   });
 }
 
+const objLoader = new THREE.ObjectLoader();
+const jsonLoader = new THREE.JSONLoader();
 const textureLoader = new THREE.TextureLoader();
 const loader = new LoadManager();
 

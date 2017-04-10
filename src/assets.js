@@ -4,6 +4,7 @@ import { loader } from './loader';
 import { Textures } from './textures';
 import { Materials } from './materials';
 import { Geometries } from './geometries';
+import { Models } from './models';
 import { Fonts } from './fonts';
 
 
@@ -44,12 +45,15 @@ function Assets(data, onLoad) {
 
   loader.atlas('uvgridatlas', '/assets/images/uvimages.pack');
 
+  loader.jsonModel('miku', '/assets/models/miku.json');
+
   loader.start(() => {
 
     data.geometries = new Geometries(data);
     data.textures = new Textures(data);
     data.materials = new Materials(data);
     data.fonts = new Fonts(data);
+    data.models = new Models(data);
 
     onLoad();
   });

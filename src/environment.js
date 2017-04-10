@@ -146,142 +146,20 @@ function Environment(data) {
 
   const board = addBoard(data, this.arena);
 
-  // const measures = blockExtrudeMeasures['red'];
-  // addBlockExtrude(data,
-  //                 board,
-  //                 measures.x,
-  //                 measures.y,
-  //                 measures.w,
-  //                 measures.h);
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      -boardWidth/2
-  //                                      + halfStepWidth
-  //                                      + boardPadding,
-  //                                      - boardWidth/2
-  //                                      + halfStepWidth * 7.5
-  //                                      + blockPadding * 6
-  //                                      + boardPadding,
-  //                                      // + halfStepWidth * 7.5
-  //                                      // + blockPadding * 5,
-  //                                      stepWidth
-  //                                      + blockPadding,
-  //                                      halfStepWidth * 3
-  //                                      + blockPadding * 3
-  //                                      + blockPadding);
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      -boardWidth/2
-  //                                      + halfStepWidth
-  //                                      + boardPadding,
-  //                                      - boardWidth/2
-  //                                      + halfStepWidth * 3
-  //                                      + blockPadding * 1
-  //                                      + boardPadding,
-  //                                      // + halfStepWidth * 7.5
-  //                                      // + blockPadding * 5,
-  //                                      stepWidth
-  //                                      + blockPadding,
-  //                                      halfStepWidth * 2
-  //                                      + blockPadding * 2
-  //                                      + blockPadding);
-
-
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      boardWidth/2
-  //                                      - halfStepWidth
-  //                                      - boardPadding,
-  //                                      - boardWidth/2
-  //                                      + halfStepWidth * 3
-  //                                      + blockPadding * 2
-  //                                      + boardPadding,
-  //                                      stepWidth
-  //                                      + blockPadding,
-  //                                      halfStepWidth * 2
-  //                                      + blockPadding * 2
-  //                                      + blockPadding);
-  
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      boardWidth/2
-  //                                      - halfStepWidth
-  //                                      - boardPadding,
-  //                                      - boardWidth/2
-  //                                      + halfStepWidth * 7.5
-  //                                      + blockPadding * 6
-  //                                      + boardPadding,
-  //                                      stepWidth
-  //                                      + blockPadding,
-  //                                      halfStepWidth * 3
-  //                                      + blockPadding * 3
-  //                                      + blockPadding);
-  
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      -boardWidth/2
-  //                                      + halfStepWidth * 3.5
-  //                                      + blockPadding * 2
-  //                                      + boardPadding,
-  //                                      - boardWidth/2
-  //                                      + halfStepWidth
-  //                                      + boardPadding,
-  //                                      halfStepWidth * 3
-  //                                      + blockPadding * 3
-  //                                      + blockPadding,
-  //                                      stepWidth
-  //                                      + blockPadding);
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      -boardWidth/2
-  //                                      + halfStepWidth * 8
-  //                                      + blockPadding * 7
-  //                                      + boardPadding,
-  //                                      - boardWidth/2
-  //                                      + halfStepWidth
-  //                                      + boardPadding,
-  //                                      halfStepWidth * 2
-  //                                      + blockPadding * 2
-  //                                      + blockPadding,
-  //                                      stepWidth
-  //                                      + blockPadding);
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      -boardWidth/2
-  //                                      + halfStepWidth * 7.5
-  //                                      + blockPadding * 6
-  //                                      + boardPadding,
-  //                                      + boardWidth/2
-  //                                      - halfStepWidth
-  //                                      - boardPadding,
-  //                                      halfStepWidth * 3
-  //                                      + blockPadding * 3
-  //                                      + blockPadding,
-  //                                      stepWidth
-  //                                      + blockPadding);
-
-  // const blockExtrude = addBlockExtrude(data, board,
-  //                                      -boardWidth/2
-  //                                      + halfStepWidth * 3
-  //                                      + blockPadding * 2
-  //                                      + boardPadding,
-  //                                      + boardWidth/2
-  //                                      - halfStepWidth
-  //                                      - boardPadding,
-  //                                      halfStepWidth * 2
-  //                                      + blockPadding * 2
-  //                                      + blockPadding,
-  //                                      stepWidth
-  //                                      + blockPadding);
-
-
   const blockExtrude = addBlockExtrudeColor(data, board, 'yellow', colors.matAmber700);
   addBlockExtrudeColor(data, board, 'blue', colors.matRed700);
   addBlockExtrudeColor(data, board, 'orange', colors.matGreen700);
   addBlockExtrudeColor(data, board, 'red', colors.matBlue700);
 
+  const player = addPlayer(data, board);
+  // player.lookAt(new THREE.Vector3(0, 0, 0));
+
   requestAnimationFrame(function loo(t) {
     // board.rotation.z+= 1 / 60 / 10;
     blockExtrude.position.z = stepDepth * 2 + 10 * Math.sin(-t/60 / 10);
+
+    // player.rotation.z += 1 / 60;
+    // player.position.x += 10 / 60;
     requestAnimationFrame(loo);
   });
 }
@@ -351,8 +229,6 @@ function addBoard(data, arena) {
   // boardMesh.position.x = 100;
   // boardMesh.position.z = 200;
   arena.add(boardMesh);
-
-  addPlayer(boardMesh);
 
   addSteps(data, boardMesh);
 
@@ -476,16 +352,25 @@ function addSteps(data, board) {
   }
 }
 
-function addPlayer(board) {
-  var player = new THREE.Mesh(
-    new THREE.BoxGeometry(10, 10, 10),
-    new THREE.MeshBasicMaterial({
-      color: 0xaabbcc
-    }));
+function addPlayer(data, board) {
+  // var player = new THREE.Mesh(
+  //   new THREE.BoxGeometry(10, 10, 10),
+  //   new THREE.MeshBasicMaterial({
+  //     color: 0xaabbcc
+  //   }));
 
-  player.position.set(-40, -40, 10);
+  const player = data.models.miku;
+
+  player.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
+                      0, stepDepth * 4);
+
+  player.scale.set(2, 2, 2);
+  player.rotation.x = degToRad(90);
+  player.rotation.y = degToRad(90);
+
   board.add(player);
-  
+
+  return player;
 }
 
 function addSkyBox(arena) {
