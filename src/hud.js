@@ -64,6 +64,8 @@ function Hud(data) {
   //   this.updateRanks('topleft', 'bottomleft');
   //   this.updateRanks('topright', 'bottomright');
   // }, 1000);
+
+  addInfoBox(data, this.container);
 }
 
 function updateTextMeshText(mesh, text) {
@@ -83,8 +85,8 @@ function positionTextMesh(mesh, scale, x, y, centerX) {
   mesh.position.set(x +
                     (centerX ? -getTextMeshWidth(mesh) / 2:
                      0),
-                    y -
-                    -getTextMeshHeight(mesh) / 2,
+                    y
+                    +getTextMeshHeight(mesh) / 2,
                     0);
 
   return mesh;
@@ -119,20 +121,24 @@ function addTurnText(data, container, nbTurn) {
 }
 
 function addPlayerText(data, container, orientation, rankText) {
-  const width = data.width * 0.75,
-        // height = data.height * 0.3;
-        height = width * 0.3;
+  const width = data.width * 0.7,
+        // height = data.height * 0.7;
+        height = width * 0.25;
 
   const offset = 0;
 
   const titleHeight = height * 0.3;
   const contentHeight = height - titleHeight;
 
-  const avatarWidth = width / 4;
+  const avatarWidth = width / 4.5;
   const avatarHeight = contentHeight;
 
-  const rankHeight = height * 0.4;
-  const rankWidth = width * 0.3;
+  const rankHeight = height * 0.35;
+  const rankWidth = width * 0.25;
+  
+  const rankTextScale = 1.6;
+  const rankXOffset = 10;
+  const rankYOffset = 10;
 
   const rankSuffixMap = {
     1: 'ST',
@@ -180,7 +186,7 @@ function addPlayerText(data, container, orientation, rankText) {
       y: data.height - height / 2 - offset,
       avatarX: width / 2 - avatarWidth / 2,
       avatarY: -height/ 2 + avatarHeight / 2,
-      rankX: width / 2 - rankWidth - 10,
+      rankX: width / 2 - rankWidth - rankXOffset,
       rankY: -height / 2 - rankHeight / 2,
       titleX: 0,
       titleY: height/2-titleHeight / 2,
@@ -202,8 +208,8 @@ function addPlayerText(data, container, orientation, rankText) {
       y: -data.height + height / 2 + offset,
       avatarX: width / 2 - avatarWidth / 2,
       avatarY: height/ 2 - avatarHeight / 2,
-      rankX: width / 2 - rankWidth - 10,
-      rankY: height / 2 + rankHeight + 10,
+      rankX: width / 2 - rankWidth - rankXOffset,
+      rankY: height / 2 + rankHeight + rankYOffset,
       titleX: 0,
       titleY: - height/2 + titleHeight / 2,
       labelCashY: contentHeight / 2.5,
@@ -224,8 +230,8 @@ function addPlayerText(data, container, orientation, rankText) {
       y: -data.height + height / 2 + offset,
       avatarX: - width / 2 + avatarWidth / 2,
       avatarY: height/ 2 - avatarHeight / 2,
-      rankX: -width / 2 + 10,
-      rankY: height / 2 + rankHeight + 10,
+      rankX: -width / 2 + rankXOffset,
+      rankY: height / 2 + rankHeight + rankYOffset,
       titleX: 0,
       titleY: - height/2 + titleHeight / 2,
       labelCashY: contentHeight / 2.5,
@@ -354,16 +360,16 @@ function addPlayerText(data, container, orientation, rankText) {
   const colorFontMesh = data.fonts.makeColorFont(rankColor)(rankText);
   const whiteFontMesh = data.fonts.makeWhiteFont(rankSuffix);
 
-  const rankTextMesh = positionTextMesh(colorFontMesh, 2, 0, 0);
+  const rankTextMesh = positionTextMesh(colorFontMesh, rankTextScale, 0, 0);
   rankAnchor.add(rankTextMesh);
   // some tweak
-  rankTextMesh.position.y -= 10;
+  rankTextMesh.position.y -= rankYOffset;
 
   const rankTextThMesh = positionTextMesh(whiteFontMesh, 1.2,
                                   getTextMeshWidth(rankTextMesh),
                                   getTextMeshHeight(rankTextMesh)/4);
   rankTextThMesh.position.x += 5;
-  rankTextThMesh.position.y -= 5;
+  rankTextThMesh.position.y += rankYOffset / 2;
   rankAnchor.add(rankTextThMesh);
 
   return {
@@ -371,6 +377,35 @@ function addPlayerText(data, container, orientation, rankText) {
     assetTextMesh,
     rankAnchor
   };
+}
+
+function addInfoBox(data, container) {
+  // const width = data.width,
+  //       height = width * 0.35;
+
+  const width = data.width,
+        // height = data.height * 0.7;
+        height = width * 0.28;
+
+  const x = -data.width + width / 2 - width / 6,
+        y = data.height - height / 2;
+  
+
+  const texture = data.textures.rboxTexture;
+
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true
+  });
+  const geometry = new THREE.PlaneGeometry(width, height);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(x, y, 2);
+  container.add(mesh);
+
+  const labelInfoText = '-781';
+  const labelInfoMesh = data.fonts.makeColorFont('red')(labelInfoText);
+  mesh.add(positionTextMesh(labelInfoMesh, 1.4, 0, 0, true));
+  labelInfoMesh.position.y += 10;
 }
 
 function addBunchOfText(data, container) {

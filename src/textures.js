@@ -4,6 +4,13 @@ import { hexToDec } from './util';
 
 
 function Textures(data) {
+  this.shanghaiTexture = loader.get('shanghai');
+  this.shanghaiTexture.anisotropy = data.renderer.getMaxAnisotropy();
+  // this.shanghaiTexture.magFilter = THREE.NearestFilter;
+  // this.shanghaiTexture.minFilter = THREE.LinearMipMapLinearFilter;
+
+  this.rboxTexture = loader.get('rbox');
+
   this.boxpackTexture = loader.get('boxpack');
   this.boxpackTexture2 = loader.get('boxpackt');
 

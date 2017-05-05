@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 
+global.THREE = require('three');
+require('../libs/TrackballControls');
+
 function CameraController(w, h) {
-  const fov = 16,
+  const fov = 10,
         aspect = w / h,
         zNear = 1,
         zFar = 2000;
@@ -19,7 +22,7 @@ function CameraController(w, h) {
   this.basePosition = new THREE.Vector3(
     0,
     0,
-    800
+    1000
   );
 
   this.target = new THREE.Vector3(
@@ -29,7 +32,6 @@ function CameraController(w, h) {
   camera.position.copy(this.basePosition);
 
   camera.lookAt(this.target);
-
 
   // orthographic camera for hud 
   // https://www.evermade.fi/en/pure-three-js-hud/
@@ -50,6 +52,13 @@ function CameraController(w, h) {
     30
   );
   this.orthoCamera = orthoCamera;
+  
+  this.trackballControls = new THREE.TrackballControls(
+    this.camera);
+
+  this.update = () => {
+    this.trackballControls.update();
+  };
   
 }
 

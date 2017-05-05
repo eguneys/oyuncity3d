@@ -19,12 +19,16 @@ function init(element, config = {}) {
 
 function initThree(data) {
 
+  data.renderer = initRenderer(data.canvas);
+
   data.render = () => {
     data.renderer.render(data.scene,
                          data.cameraController.camera);
 
     data.renderer.render(data.hudScene,
                          data.cameraController.orthoCamera);
+
+    data.cameraController.update();
   };
 
   data.update = () => {
@@ -37,7 +41,6 @@ function initThree(data) {
     data.hudScene = initScene();
     data.container = initContainer(data.scene);
     data.cameraController = new CameraController(data.width, data.height);
-    data.renderer = initRenderer(data.canvas);
 
     data.world = new World(data);
 

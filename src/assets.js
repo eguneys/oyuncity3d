@@ -10,6 +10,9 @@ import { Fonts } from './fonts';
 
 function Assets(data, onLoad) {
 
+  loader.texture('rbox', '/assets/images/rbox_03.png');
+  loader.texture('shanghai', '/assets/images/shangai_03.png');
+
   loader.texture('ftexture', '/assets/images/pravatar.png');
   // https://www.fontsquirrel.com/fonts/baloo
 
