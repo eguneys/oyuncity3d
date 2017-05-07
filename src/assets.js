@@ -7,12 +7,22 @@ import { Geometries } from './geometries';
 import { Models } from './models';
 import { Fonts } from './fonts';
 
+const cities = ['hongkong', 'shanghai',
+                'jakarta', 'singapore',
+                'mumbai', 'tahran',
+                'buenos', 'saopaulo',
+                'lisbon', 'madrid',
+                'berlin', 'rome',
+                'london', 'jejudo',
+                'newyork', 'seoul',
+                'chance'];
 
 function Assets(data, onLoad) {
+  cities.forEach((city) => {
+    loader.texture(city, `/assets/images/cities/${city}-01.png`);
+  });
 
   loader.texture('rbox', '/assets/images/rbox_03.png');
-  loader.texture('shanghai', '/assets/images/shangai_03.png');
-
   loader.texture('ftexture', '/assets/images/pravatar.png');
   // https://www.fontsquirrel.com/fonts/baloo
 
@@ -62,4 +72,9 @@ function Assets(data, onLoad) {
   });
 }
 
-export { Assets }
+
+const getAsset = (key) => {
+  return loader.get(key);
+};
+
+export { Assets, getAsset, cities }

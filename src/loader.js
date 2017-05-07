@@ -99,6 +99,7 @@ function loadTexture(url, onLoad, onError) {
   },
                      function() {},
                      function(xhr) {
+                       console.error('Unable to load: ' + url);
                        throw xhr;
                      });
 }

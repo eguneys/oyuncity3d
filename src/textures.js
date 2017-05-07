@@ -1,25 +1,35 @@
 import * as THREE from 'three';
-import { loader } from './loader';
+import { getAsset, cities } from './assets';
 import { hexToDec } from './util';
 
 
 function Textures(data) {
-  this.shanghaiTexture = loader.get('shanghai');
-  this.shanghaiTexture.anisotropy = data.renderer.getMaxAnisotropy();
+  const maxAnisotropy = data.renderer.getMaxAnisotropy();
+
+  this.cityTextures = [];
+
+  cities.forEach((city) => {
+    const texture = getAsset(city);
+    texture.anisotropy = maxAnisotropy;
+    this.cityTextures[city] = texture;
+  });
+
+  this.shanghaiTexture = getAsset('shanghai');
+  this.shanghaiTexture.anisotropy = maxAnisotropy;
   // this.shanghaiTexture.magFilter = THREE.NearestFilter;
-  // this.shanghaiTexture.minFilter = THREE.LinearMipMapLinearFilter;
+  // this.shanghaiTexture.minFilter = THREE.NearestLinearFilter;
 
-  this.rboxTexture = loader.get('rbox');
+  this.rboxTexture = getAsset('rbox');
 
-  this.boxpackTexture = loader.get('boxpack');
-  this.boxpackTexture2 = loader.get('boxpackt');
+  this.boxpackTexture = getAsset('boxpack');
+  this.boxpackTexture2 = getAsset('boxpackt');
 
-  this.pmTexture = loader.get('pmt');
+  this.pmTexture = getAsset('pmt');
 
-  this.uvgridTexture = loader.get('uvgrid');
-  this.uvgridAtlas = loader.get('uvgridatlas');
+  this.uvgridTexture = getAsset('uvgrid');
+  this.uvgridAtlas = getAsset('uvgridatlas');
 
-  this.avatarTexture = loader.get('ftexture');
+  this.avatarTexture = getAsset('ftexture');
 
   this.makeTextureGradient = (color1, color2, alpha1 = 1, alpha2 = 1) => {
     const texture = new THREE.Texture(

@@ -13,13 +13,14 @@ const blockColorMap = {
   orange: colors.matOrange500,
   purple: colors.matPurple500,
   blue: colors.matBlue500,
-  red: colors.matRed500
+  red: colors.matRed500,
+  amber: colors.matAmber700
 };
 
 const boardWidth = 200;
 const stepDepth = 5;
 
-const nbSteps = 11;
+const nbSteps = 9;
 const nbInSteps = nbSteps - 4;
 const blockPadding = 1;
 const boardPadding = 1;
@@ -230,9 +231,110 @@ function addBoard(data, arena) {
   // boardMesh.position.z = 200;
   arena.add(boardMesh);
 
-  addSteps(data, boardMesh);
+  addSteps2(data, boardMesh);
 
   return boardMesh;
+}
+
+function addSteps2(data, board) {
+  const blocks = data.blocks;
+
+  function getBlockColorOrDefault(blockIndex) {
+    const defaultColor = 0x111111;
+
+    return (blocks[blockIndex] ? blockColorMap[blocks[blockIndex].color]
+            || defaultColor :
+            defaultColor);
+  }
+
+  function getBlockTexture(blockIndex) {
+    const blockTexture = blocks[blockIndex].texture;
+    return data.textures.cityTextures[blockTexture];
+  }
+
+  function makeStepMesh(width, height, color = 0xffffff) {
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(width, height, stepDepth),
+      new THREE.MeshPhongMaterial({
+        color: color
+      }));
+
+    return mesh;
+  }
+
+  function makeStepMesh2(width, height, color, texture) {
+    const materials = [
+      new THREE.MeshLambertMaterial({
+        color: color
+      }),      new THREE.MeshLambertMaterial({
+        color: color
+      }),      new THREE.MeshLambertMaterial({
+        color: color
+      }),      new THREE.MeshLambertMaterial({
+        color: color
+      }),
+      new THREE.MeshLambertMaterial({
+        map: texture
+      }),
+      new THREE.MeshLambertMaterial({
+        color: color
+      })];
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(width, height, stepDepth),
+      new THREE.MultiMaterial(materials));
+
+    return mesh;
+  }
+
+  function makeStepBlockY(blockIndex) {
+    const block = new THREE.Group();
+
+    var blockColor,
+        blockTexture;
+
+    var step1;
+    for (var i = 0; i < nbInSteps; i++) {
+      blockColor = getBlockColorOrDefault(blockIndex + i);
+      blockTexture = getBlockTexture(blockIndex + i);
+      step1 = makeStepMesh2(stepWidth, halfStepWidth, blockColor, blockTexture);
+
+      var reverse = blockIndex > 7;
+      var inc = reverse ? (nbInSteps - i - 1) : i;
+
+      step1.position.set(0,
+                         0
+                         + stepIncrementWidth +
+                         halfStepWidth * inc +
+                         blockPadding * (inc + 1), 0);
+      block.add(step1);
+    }
+    return block;
+  }
+
+  const blockEast = makeStepBlockY(1);
+  blockEast.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
+                         -halfBoardWidth + halfStepWidth + boardPadding,
+                         stepDepth);
+  board.add(blockEast);
+  const blockWest = makeStepBlockY(13);
+  blockWest.position.set(halfBoardWidth - halfStepWidth - boardPadding,
+                         -halfBoardWidth + halfStepWidth + boardPadding,
+                         stepDepth);
+  board.add(blockWest);
+
+  const blockNorth = makeStepBlockY(19);
+  blockNorth.position.set(- halfBoardWidth + halfStepWidth + boardPadding,
+                          - halfBoardWidth + halfStepWidth + boardPadding,
+                         stepDepth);
+  blockNorth.rotation.z = degToRad(-90);
+  board.add(blockNorth);
+
+  const blockSouth = makeStepBlockY(7);
+  blockSouth.position.set(- halfBoardWidth + halfStepWidth + boardPadding,
+                          + halfBoardWidth - halfStepWidth - boardPadding,
+                         stepDepth);
+  blockSouth.rotation.z = degToRad(-90);
+  board.add(blockSouth);
 }
 
 function addSteps(data, board) {
