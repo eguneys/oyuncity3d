@@ -150,7 +150,7 @@ function Environment(data) {
   const blockExtrude = addBlockExtrudeColor(data, board, 'yellow', colors.matAmber700);
   addBlockExtrudeColor(data, board, 'blue', colors.matRed700);
   addBlockExtrudeColor(data, board, 'orange', colors.matGreen700);
-  addBlockExtrudeColor(data, board, 'red', colors.matBlue700);
+  // addBlockExtrudeColor(data, board, 'red', colors.matBlue700);
 
   const player = addPlayer(data, board);
   // player.lookAt(new THREE.Vector3(0, 0, 0));
@@ -335,6 +335,14 @@ function addSteps2(data, board) {
                          stepDepth);
   blockSouth.rotation.z = degToRad(-90);
   board.add(blockSouth);
+
+  const blockGo = makeStepMesh(stepWidth,
+                               stepWidth,
+                               0xffffff);
+  blockGo.position.set(- halfBoardWidth + halfStepWidth + boardPadding,
+                       - halfBoardWidth + halfStepWidth + boardPadding,
+                       stepDepth);
+  board.add(blockGo);
 }
 
 function addSteps(data, board) {
@@ -495,9 +503,15 @@ function addSkyBox(arena) {
 }
 
 function addLight(arena) {
-  const light = new THREE.DirectionalLight(0xffffff, 1.8);
-  light.position.set(0, 0, 160);
+  const ambient = new THREE.AmbientLight(0xc0c0c0);
+  arena.add(ambient);
+
+  const light = new THREE.DirectionalLight(0x808080, 0.8);
+  light.position.set(0, 100, 100);
   arena.add(light);
+
+  const lightHelper = new THREE.DirectionalLightHelper(light);
+  arena.add(lightHelper);
 }
 
 function addGridHelper(arena) {
