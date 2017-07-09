@@ -17,6 +17,8 @@ const blockColorMap = {
   amber: colors.matAmber700
 };
 
+const playerStepWidth = 200 / (10 * 20);
+
 const boardWidth = 200;
 const stepDepth = 5;
 
@@ -31,6 +33,9 @@ const halfStepWidth = (boardWidth
 const stepWidth = halfStepWidth * 2;
 const halfBoardWidth = boardWidth / 2;
 const stepIncrementWidth = halfStepWidth * 1.5;
+
+const boardBox = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(), new THREE.Vector3(boardWidth, boardWidth, 1));
+const stepBox = boardBox.expandByScalar(-1 * (halfStepWidth + boardPadding));
 
 const blockExtrudeEdgeTopLeft =
   +boardWidth/2
@@ -153,14 +158,63 @@ function Environment(data) {
   // addBlockExtrudeColor(data, board, 'red', colors.matBlue700);
 
   const player = addPlayer(data, board);
-  // player.lookAt(new THREE.Vector3(0, 0, 0));
+  this.player = player;
 
-  requestAnimationFrame(function loo(t) {
+  const pBox = new THREE.Box3().setFromObject(player).size();
+  let pDirection = 'up';
+
+  const directions = {
+    up: new THREE.Vector3(0, 1, 0),
+    down: new THREE.Vector3(0, -1, 0),
+    left: new THREE.Vector3(-1, 0, 0),
+    right: new THREE.Vector3(1, 0, 0)
+  };
+
+  const updatePDirection = () => {
+    const pp = this.player.position;
+
+    // if (pp.y + (pBox.y / 2) <= boardEdgeBottomLeft.y) {
+    //   pDirection = 'right';
+    // }
+
+    if (pp.y + (pBox.y / 2) > stepBox.max.y) {
+      pp.y = Math.floor(stepBox.max.y - pBox.y / 2);
+      pDirection = 'right';
+    }
+    else if (pp.x + (pBox.x / 2) > stepBox.max.x) {
+      pp.x = Math.floor(stepBox.max.x - (pBox.x / 2));
+      pDirection = 'down';
+    }
+    else if (pp.y + (pBox.y / 2) < stepBox.min.y) {
+      pp.y = Math.ceil(stepBox.min.y - pBox.y / 2);
+      pDirection = 'left';
+    }
+    else if (pp.x + (pBox.x / 2) < stepBox.min.x) {
+      pp.x = Math.ceil(stepBox.min.x - pBox.x / 2);
+      pDirection = 'up';
+    }
+  };
+  
+  this.update = (step, total) => {
+    const tilePS = 1.5;
+    const tileWidth = stepWidth;
+
+    updatePDirection();
+    
+    const vector = directions[pDirection];
+    this.player.position.addScaledVector(vector, step * tilePS * tileWidth);
+
+    
     // board.rotation.z+= 1 / 60 / 10;
-    blockExtrude.position.z = stepDepth * 2 + 10 * Math.sin(-t/60 / 10);
+    // blockExtrude.position.z = stepDepth * 2 + 10 * Math.sin(-t/60 / 10);
 
-    // player.rotation.z += 1 / 60;
-    // player.position.x += 10 / 60;
+    // const rps = 920;
+    // player.rotation.z += degToRad(step * rps);
+    // player.position.x += 10 / 60;    
+  };
+  
+  requestAnimationFrame(function loo(t) {
+
     requestAnimationFrame(loo);
   });
 }
@@ -312,26 +366,26 @@ function addSteps2(data, board) {
   }
 
   const blockEast = makeStepBlockY(1);
-  blockEast.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
-                         -halfBoardWidth + halfStepWidth + boardPadding,
+  blockEast.position.set(stepBox.min.x,
+                         stepBox.min.y,
                          stepDepth);
   board.add(blockEast);
   const blockWest = makeStepBlockY(13);
-  blockWest.position.set(halfBoardWidth - halfStepWidth - boardPadding,
-                         -halfBoardWidth + halfStepWidth + boardPadding,
+  blockWest.position.set(stepBox.max.x,
+                         stepBox.min.y,
                          stepDepth);
   board.add(blockWest);
 
   const blockNorth = makeStepBlockY(19);
-  blockNorth.position.set(- halfBoardWidth + halfStepWidth + boardPadding,
-                          - halfBoardWidth + halfStepWidth + boardPadding,
+  blockNorth.position.set(stepBox.min.x,
+                          stepBox.min.y,
                          stepDepth);
   blockNorth.rotation.z = degToRad(-90);
   board.add(blockNorth);
 
   const blockSouth = makeStepBlockY(7);
-  blockSouth.position.set(- halfBoardWidth + halfStepWidth + boardPadding,
-                          + halfBoardWidth - halfStepWidth - boardPadding,
+  blockSouth.position.set(stepBox.min.x,
+                          stepBox.max.y,
                          stepDepth);
   blockSouth.rotation.z = degToRad(-90);
   board.add(blockSouth);
@@ -339,128 +393,128 @@ function addSteps2(data, board) {
   const blockGo = makeStepMesh(stepWidth,
                                stepWidth,
                                0xffffff);
-  blockGo.position.set(- halfBoardWidth + halfStepWidth + boardPadding,
-                       - halfBoardWidth + halfStepWidth + boardPadding,
+  blockGo.position.set(stepBox.min.x,
+                       stepBox.min.y,
                        stepDepth);
   board.add(blockGo);
 }
 
-function addSteps(data, board) {
-  const blocks = data.blocks;
+// function addSteps(data, board) {
+//   const blocks = data.blocks;
 
-  function getBlockColorOrDefault(blockIndex) {
-    const defaultColor = 0x111111;
+//   function getBlockColorOrDefault(blockIndex) {
+//     const defaultColor = 0x111111;
 
-    return (blocks[blockIndex] ? blockColorMap[blocks[blockIndex].color]
-            || defaultColor :
-            defaultColor);
-  }
+//     return (blocks[blockIndex] ? blockColorMap[blocks[blockIndex].color]
+//             || defaultColor :
+//             defaultColor);
+//   }
 
-  function makeStepMesh(width, height, color = 0xffffff) {
-    const mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(width, height, stepDepth),
-      new THREE.MeshPhongMaterial({
-        color: color
-      }));
+//   function makeStepMesh(width, height, color = 0xffffff) {
+//     const mesh = new THREE.Mesh(
+//       new THREE.BoxGeometry(width, height, stepDepth),
+//       new THREE.MeshPhongMaterial({
+//         color: color
+//       }));
 
-    return mesh;
-  }
+//     return mesh;
+//   }
 
-  var blockIndex = 0;
-  var blockColor;
+//   var blockIndex = 0;
+//   var blockColor;
 
-  var step0 = makeStepMesh(stepWidth, stepWidth);
+//   var step0 = makeStepMesh(stepWidth, stepWidth);
 
-  step0.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
-                    -halfBoardWidth + halfStepWidth + boardPadding,
-                    stepDepth);
-  board.add(step0);
+//   step0.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
+//                     -halfBoardWidth + halfStepWidth + boardPadding,
+//                     stepDepth);
+//   board.add(step0);
 
-  var step1,
-      yIncrement = stepIncrementWidth,
-      xIncrement = stepIncrementWidth;
-  for (var i = 0; i < nbInSteps; i++) {
-    blockIndex++;
-    blockColor = getBlockColorOrDefault(blockIndex);
-    step1 = makeStepMesh(stepWidth, halfStepWidth, blockColor);
-    step1.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
-                       -halfBoardWidth + halfStepWidth + boardPadding
-                       + yIncrement
-                       + blockPadding * (i + 1),
-                       stepDepth);
-    board.add(step1);
+//   var step1,
+//       yIncrement = stepIncrementWidth,
+//       xIncrement = stepIncrementWidth;
+//   for (var i = 0; i < nbInSteps; i++) {
+//     blockIndex++;
+//     blockColor = getBlockColorOrDefault(blockIndex);
+//     step1 = makeStepMesh(stepWidth, halfStepWidth, blockColor);
+//     step1.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
+//                        -halfBoardWidth + halfStepWidth + boardPadding
+//                        + yIncrement
+//                        + blockPadding * (i + 1),
+//                        stepDepth);
+//     board.add(step1);
 
-    yIncrement += halfStepWidth;
-  }
+//     yIncrement += halfStepWidth;
+//   }
 
-  blockIndex = 8;
-  var step2 = makeStepMesh(stepWidth, stepWidth);
+//   blockIndex = 8;
+//   var step2 = makeStepMesh(stepWidth, stepWidth);
 
-  step2.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
-                     halfBoardWidth - halfStepWidth - boardPadding,
-                    stepDepth);
-  board.add(step2);
-  for (i = 0; i < nbInSteps; i++) {
-    blockIndex++;
-    blockColor = getBlockColorOrDefault(blockIndex);
-    step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
-    step1.position.set(-halfBoardWidth + halfStepWidth + boardPadding
-                       + xIncrement
-                       + blockPadding * (i + 1),
-                       halfBoardWidth - halfStepWidth - boardPadding,
-                       stepDepth);
-    board.add(step1);
+//   step2.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
+//                      halfBoardWidth - halfStepWidth - boardPadding,
+//                     stepDepth);
+//   board.add(step2);
+//   for (i = 0; i < nbInSteps; i++) {
+//     blockIndex++;
+//     blockColor = getBlockColorOrDefault(blockIndex);
+//     step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
+//     step1.position.set(-halfBoardWidth + halfStepWidth + boardPadding
+//                        + xIncrement
+//                        + blockPadding * (i + 1),
+//                        halfBoardWidth - halfStepWidth - boardPadding,
+//                        stepDepth);
+//     board.add(step1);
 
-    xIncrement += halfStepWidth;
-  }
+//     xIncrement += halfStepWidth;
+//   }
 
-  blockIndex = 16;
-  var step4 = makeStepMesh(stepWidth, stepWidth);
+//   blockIndex = 16;
+//   var step4 = makeStepMesh(stepWidth, stepWidth);
 
-  step4.position.set(halfBoardWidth - halfStepWidth - boardPadding,
-                     halfBoardWidth - halfStepWidth - boardPadding,
-                    stepDepth);
-  board.add(step4);
+//   step4.position.set(halfBoardWidth - halfStepWidth - boardPadding,
+//                      halfBoardWidth - halfStepWidth - boardPadding,
+//                     stepDepth);
+//   board.add(step4);
 
-  yIncrement = - halfStepWidth * 1.5;
-  for (i = 0; i < nbInSteps; i++) {
-    blockIndex++;
-    blockColor = getBlockColorOrDefault(blockIndex);
-    step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
-    step1 = makeStepMesh(stepWidth, halfStepWidth, blockColor);
-    step1.position.set(halfBoardWidth - halfStepWidth - boardPadding,
-                       halfBoardWidth - halfStepWidth - boardPadding
-                       + yIncrement
-                       - blockPadding * (i + 1),
-                       stepDepth);
-    board.add(step1);
+//   yIncrement = - halfStepWidth * 1.5;
+//   for (i = 0; i < nbInSteps; i++) {
+//     blockIndex++;
+//     blockColor = getBlockColorOrDefault(blockIndex);
+//     step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
+//     step1 = makeStepMesh(stepWidth, halfStepWidth, blockColor);
+//     step1.position.set(halfBoardWidth - halfStepWidth - boardPadding,
+//                        halfBoardWidth - halfStepWidth - boardPadding
+//                        + yIncrement
+//                        - blockPadding * (i + 1),
+//                        stepDepth);
+//     board.add(step1);
 
-    yIncrement -= halfStepWidth;
-  }
+//     yIncrement -= halfStepWidth;
+//   }
 
-  blockIndex = 24;
-  var step6 = makeStepMesh(stepWidth, stepWidth);
+//   blockIndex = 24;
+//   var step6 = makeStepMesh(stepWidth, stepWidth);
 
-  step6.position.set(halfBoardWidth - halfStepWidth - boardPadding,
-                     -halfBoardWidth + halfStepWidth + boardPadding,
-                     stepDepth);
-  board.add(step6);
+//   step6.position.set(halfBoardWidth - halfStepWidth - boardPadding,
+//                      -halfBoardWidth + halfStepWidth + boardPadding,
+//                      stepDepth);
+//   board.add(step6);
 
-  xIncrement = - halfStepWidth * 1.5;
-  for (i = 0; i < nbInSteps; i++) {
-    blockIndex++;
-    blockColor = getBlockColorOrDefault(blockIndex);
-    step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
-    step1.position.set(halfBoardWidth - halfStepWidth - boardPadding
-                       + xIncrement
-                       - blockPadding * (i + 1),
-                       - halfBoardWidth + halfStepWidth + boardPadding,
-                       stepDepth);
-    board.add(step1);
+//   xIncrement = - halfStepWidth * 1.5;
+//   for (i = 0; i < nbInSteps; i++) {
+//     blockIndex++;
+//     blockColor = getBlockColorOrDefault(blockIndex);
+//     step1 = makeStepMesh(halfStepWidth, stepWidth, blockColor);
+//     step1.position.set(halfBoardWidth - halfStepWidth - boardPadding
+//                        + xIncrement
+//                        - blockPadding * (i + 1),
+//                        - halfBoardWidth + halfStepWidth + boardPadding,
+//                        stepDepth);
+//     board.add(step1);
 
-    xIncrement -= halfStepWidth;
-  }
-}
+//     xIncrement -= halfStepWidth;
+//   }
+// }
 
 function addPlayer(data, board) {
   // var player = new THREE.Mesh(
@@ -471,7 +525,7 @@ function addPlayer(data, board) {
 
   const player = data.models.miku;
 
-  player.position.set(-halfBoardWidth + halfStepWidth + boardPadding,
+  player.position.set(stepBox.min.x,
                       0, stepDepth * 4);
 
   player.scale.set(2, 2, 2);

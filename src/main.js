@@ -4,7 +4,7 @@ import { Environment } from './environment';
 import { Hud } from './hud';
 import { World } from './world';
 import { Assets } from './assets';
-import { Loop } from './loop';
+import GameLoop from 'gameloop';
 
 function init(element, config = {}) {
   const data = {};
@@ -21,7 +21,7 @@ function initThree(data) {
 
   data.renderer = initRenderer(data.canvas);
 
-  data.render = () => {
+  const onRender = () => {
     data.renderer.render(data.scene,
                          data.cameraController.camera);
 
@@ -31,11 +31,15 @@ function initThree(data) {
     data.cameraController.update();
   };
 
-  data.update = () => {
+  const onUpdate = (interval, time) => {
+    data.environment.update(interval, time);
   };
 
-  const loop = new Loop(data);
+  data.loop = GameLoop();
 
+  data.loop.on('update', onUpdate);
+  data.loop.on('draw', onRender);
+  
   const onLoad = () => {
     data.scene = initScene();
     data.hudScene = initScene();
@@ -47,7 +51,7 @@ function initThree(data) {
     data.environment = new Environment(data);
     data.hud = new Hud(data);
 
-    loop.run();
+    data.loop.start();
   };
 
   data.assets = new Assets(data, onLoad);
